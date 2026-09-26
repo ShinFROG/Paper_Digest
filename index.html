@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="今日の論文">
+<meta name="theme-color" content="#0f1216" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3f4f1" media="(prefers-color-scheme: light)">
+<title>Paper Digest｜今日の論文</title>
+<style>
+:root {
+  --bg: #f3f4f1;
+  --surface: #ffffff;
+  --ink: #15181d;
+  --muted: #5b6470;
+  --line: #dde1e5;
+  --accent: #0f6e6e;
+  --accent-ink: #ffffff;
+  --accent-soft: #dcefed;
+  --star: #b7791f;
+  --t1: #dcebf7; --t2: #e3f1e1; --t3: #f6e8dc; --t4: #efe3f3; --t5: #e2eef0; --t6: #f3efd9; --t7: #ece7e3;
+  --font: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0f1216;
+    --surface: #171b21;
+    --ink: #eceff3;
+    --muted: #9aa3ae;
+    --line: #2a313a;
+    --accent: #4fc3b8;
+    --accent-ink: #0f1216;
+    --accent-soft: #1b3533;
+    --star: #f0b54a;
+    --t1: #1e2c3a; --t2: #1f3121; --t3: #3a2a1d; --t4: #30223a; --t5: #1d3134; --t6: #353018; --t7: #2e2925;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+button, select { font: inherit; color: inherit; }
+a { color: var(--accent); }
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 0;
+}
+/* header */
+.top { display: grid; gap: 10px; padding-bottom: 10px; }
+.toprow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.brand { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
+.brand small { font-weight: 400; color: var(--muted); margin-left: 6px; }
+.datesel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 8px 10px; font-size: 15px; max-width: 58vw;
+}
+.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface);
+  border-radius: 999px; padding: 8px 14px; font-size: 15px; font-weight: 600;
+}
+.tab[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+/* card */
+.stage { display: flex; flex-direction: column; min-height: 0; }
+.card {
+  flex: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+  padding: 20px 18px 22px; display: flex; flex-direction: column; gap: 14px;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.cardhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pos { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 600; }
+.chip { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--t1); white-space: nowrap; }
+.headline { margin: 0; font-size: 26px; line-height: 1.35; font-weight: 800; letter-spacing: 0.01em; text-wrap: balance; }
+.label { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 2px; letter-spacing: 0.04em; }
+.summary, .reason { margin: 0; font-size: 18px; line-height: 1.7; }
+.reason { font-size: 17px; }
+.orig { margin: 0; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.meta { margin: 0; font-size: 13px; color: var(--muted); }
+.empty { color: var(--muted); font-size: 16px; line-height: 1.7; }
+/* list */
+.list { flex: 1; overflow-y: auto; display: grid; gap: 8px; align-content: start; padding-bottom: 8px; }
+.row {
+  display: grid; grid-template-columns: 2.2em 1fr; gap: 8px; align-items: start; text-align: left;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+}
+.row .n { font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+.row .h { font-weight: 700; font-size: 16px; line-height: 1.45; }
+.row .s { font-size: 13px; color: var(--muted); margin-top: 2px; }
+/* controls */
+.controls {
+  position: sticky; bottom: 0; background: var(--bg);
+  padding: 10px 0 calc(env(safe-area-inset-bottom, 0px) + 10px);
+  display: grid; grid-template-columns: 1fr auto auto auto 1fr; gap: 8px; align-items: center;
+}
+.btn {
+  min-height: 56px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface);
+  font-size: 17px; font-weight: 700; padding: 0 14px;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.icon { width: 56px; padding: 0; font-size: 22px; }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.btn.star[aria-pressed="true"] { color: var(--star); border-color: var(--star); }
+.btn:disabled { opacity: 0.35; }
+.speechbar { display: flex; gap: 8px; justify-content: center; font-size: 13px; color: var(--muted); padding: 0 0 6px; }
+.speechbar button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 600; }
+.speechbar button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.intro { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (min-width: 700px) { .headline { font-size: 30px; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="toprow">
+      <div class="brand">Paper Digest<small id="daylabel"></small></div>
+      <select id="datesel" class="datesel" aria-label="日付を選ぶ"></select>
+    </div>
+    <div class="tabs" role="group" aria-label="表示の切り替え">
+      <button class="tab" data-view="part1" type="button">関連 20</button>
+      <button class="tab" data-view="part2" type="button">注目 10</button>
+      <button class="tab" data-view="marks" type="button">★ あとで読む</button>
+      <button class="tab" data-view="list" type="button">一覧</button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage"></main>
+
+  <footer class="controls" id="controls">
+    <button class="btn" id="prev" type="button" aria-label="前の論文">← 前</button>
+    <button class="btn icon" id="speak" type="button" aria-label="読み上げ">🔊</button>
+    <button class="btn icon star" id="mark" type="button" aria-label="あとで読むに追加">☆</button>
+    <button class="btn icon" id="auto" type="button" aria-label="連続で読み上げ" aria-pressed="false">⏯</button>
+    <button class="btn primary" id="next" type="button" aria-label="次の論文">次 →</button>
+  </footer>
+</div>
+
+<script id="report-data" type="application/json">{"date": "2026-09-26", "intro": "新着約1万2千件（arXiv、SSRN、Research Square、bioRxiv、Preprints.org、学術誌、RePEc、J-STAGE など）と、主要誌・注目AI論文266件から選びました。", "part1": [{"rank": 1, "theme": "VBI・橋梁SHM", "headline": "車軸の傾きが車両走査法の結果をゆがめる", "title": "Incorporating wheel axle inclination effects into a vehicle-bridge interaction system for vehicle scanning method", "url": "https://doi.org/10.1142/s0219455428710022", "authors": "Judy P. Yang ほか", "venue": "International Journal of Structural Stability and Dynamics", "date": "2026-09-24", "summary": "試験車の車軸の傾きが車両応答に余分な周波数成分を生み、車両走査法の結果の解釈に影響することを、理論の定式化とパラメータの検討で示した。"}, {"rank": 2, "theme": "会計情報科学", "headline": "預金残高の動きで中小企業の財務困窮予測が向上", "title": "Enhancing SME financial distress prediction by integrating financial and deposit dynamics indicators", "url": "https://doi.org/10.1080/00472778.2026.2730423", "authors": "Kaito Terada ほか", "venue": "Journal of Small Business Management", "date": "2026-09-16", "summary": "日本の中小企業データで、流動性預金残高の動きを財務比率と組み合わせると、財務困窮の予測精度が統計的に有意に上がることを示した。"}, {"rank": 3, "theme": "VBI・橋梁SHM", "headline": "一般車両とスマホで橋を見守る基盤", "title": "A crowdsensing platform for structural health monitoring of rural bridge infrastructure", "url": "https://doi.org/10.12688/openreseurope.22915.2", "authors": "Nikolaos D. Tantaroudas ほか", "venue": "Open Research Europe", "date": "2026-09-22", "summary": "スマートフォンにつないだUSB加速度計で走行車両から橋の振動を集める、低予算の自治体向けクラウドセンシング基盤を実装した。"}, {"rank": 4, "theme": "会計情報科学", "headline": "実行可能な反実仮想説明を作る「FCx」", "title": "FCx: An algorithm for finding Feasible Counterfactual Explanations", "url": "https://doi.org/10.48550/arxiv.2609.19383", "authors": "Kleopatra Markou ほか", "venue": "arXiv", "date": "2026-09-16", "summary": "ドメイン知識による制約と、データから因果推論で推定した制約の両方を課し、実行可能な反実仮想説明を効率よく生成する。"}, {"rank": 5, "theme": "VBI・橋梁SHM", "headline": "点検記録から鋼桁橋のFEモデルを自動生成", "title": "Evidence-aware automated finite-element model generation for steel girder bridges from incomplete inspection archives", "url": "https://doi.org/10.2139/ssrn.7517644", "authors": "Shreejan Maharjan ほか", "venue": "SSRN", "date": "2026-09-24", "summary": "部材寸法が欠けた点検記録から、各パラメータの出典と確信度を保持したまま、鋼桁橋のFEモデルを自動で生成する枠組み。"}, {"rank": 6, "theme": "VBI・橋梁SHM", "headline": "実橋に損傷を与えたデータで損傷検知を検証", "title": "Unsupervised damage detection in a full-scale bridge using a frequency-domain autoencoder", "url": "https://doi.org/10.1016/j.rineng.2026.113055", "authors": "Cian Ó Cathasaigh ほか", "venue": "Results in Engineering", "date": "2026-09-17", "summary": "実橋に段階的な損傷を与えて計測したデータで、モード別にまとめた周波数領域オートエンコーダによる教師なし損傷検知を検証した。"}, {"rank": 7, "theme": "包摂的コミュニティ・社会", "headline": "「社会的つながり」の次元構造（英国4.1万人）", "title": "The Multidimensional Structure of Social Connectedness and Its Associations with Wellbeing and Quality of Life", "url": "https://doi.org/10.21203/rs.3.rs-10420555/v1", "authors": "Smyth C ほか", "venue": "Research Square", "date": "2026-09-23", "summary": "英国の世帯パネル調査（41,242人）で、関係の質・家族の支え・信頼・近隣の結束・孤独が一つの「社会的つながり」の構成概念かを確認的因子分析で比べ、well-beingとの関連を調べた。"}, {"rank": 8, "theme": "会計情報科学", "headline": "財務諸表を丸ごと長期予測する「Forma」", "title": "Long-Horizon Forecasting of Complete Financial Statements with Forma", "url": "https://econpapers.repec.org/RePEc:arx:papers:2608.11327", "authors": "Travis L. Johnson ほか", "venue": "arXiv（RePEc NEP 計算経済）", "date": "2026-08", "summary": "財務諸表の78科目を1〜20四半期先まで同時に予測するベンチマークと、諸表を（科目、四半期、値）の組の集合として読むTransformer「Forma」を提案した。"}, {"rank": 9, "theme": "会計情報科学", "headline": "仕訳テストと機械学習で元帳の異常を検知", "title": "Anomaly Detection in General Ledger Data: Results from a Hybrid Approach", "url": "https://doi.org/10.48550/arxiv.2609.18228", "authors": "Jan Gronewald ほか", "venue": "arXiv", "date": "2026-09-16", "summary": "監査の仕訳テスト（JET）と機械学習の異常検知を組み合わせ、誤検知の多い抽出リストを絞り込む方法を比べた途中報告。"}, {"rank": 10, "theme": "LLM熟議・ペルソナ", "headline": "LLMの合成回答者を実際の調査と照合", "title": "Synthetic Respondents in Survey Research: An Empirical Test Against a Student Survey", "url": "https://doi.org/10.5281/zenodo.22939960", "authors": "Inna Gazieva", "venue": "Zenodo", "date": "2026-09-24", "summary": "実在の回答者の属性から作ったLLMの「デジタルツイン」に学生調査（N=1,795、39項目）へ回答させ、実際の回答と照合して、合成回答者を使える範囲を検証した。"}, {"rank": 11, "theme": "LLM熟議・ペルソナ", "headline": "行動研究の参加者はAIで置き換えられない", "title": "AI cannot replace human participants in behavioral research", "url": "https://doi.org/10.1073/pnas.2611363123", "authors": "Jim Hoover ほか", "venue": "PNAS", "date": "2026-09-23", "summary": "概要なし（タイトルから判断）。"}, {"rank": 12, "theme": "LLM熟議・ペルソナ", "headline": "AIが司会するインタビューとデジタルツイン", "title": "AI-Moderated Interviews for Market Research and Digital Twins Calibration", "url": "https://arxiv.org/abs/2609.29143", "authors": "Yuting Deng ほか", "venue": "arXiv", "date": "2026-09-25", "summary": "事前登録した実験（N=317）で、AIが司会するインタビューは人間の司会と同等の深さで、同じ予算ならより多くの顧客ニーズを引き出した。"}, {"rank": 13, "theme": "サービス・マーケティング", "headline": "遅延便の回復失敗が生む感情と口コミ", "title": "Anatomy of a Desperate Wait: Passengers' Emotions and Behavioral Reactions to the Service Recovery Deficiency for Delayed Flights by Airlines", "url": "https://doi.org/10.26650/jtl.2026.1820008", "authors": "Sadiye Oya Işıkcı", "venue": "Journal of Transportation and Logistics", "date": "2026-09-23", "summary": "遅延便でのサービス回復の不足が、怒り・不安・不満という感情ごとに、苦情・否定的な口コミ・乗り換えへ異なる影響を与えることを示した。"}, {"rank": 14, "theme": "会計情報科学", "headline": "会計制約＋LLM＋グラフNNで異常仕訳を検出", "title": "Constraint-Guided LLM-GNN Framework for Anomalous Journal Entry Detection in Auditing", "url": "https://doi.org/10.20944/preprints202609.2005.v1", "authors": "Jiaming Chen ほか", "venue": "Preprints.org", "date": "2026-09-23", "summary": "仕訳間の関係を異種グラフNNで、会計上の制約を明示的なルールで、文脈をLLMで扱い、異常な仕訳を検出する。"}, {"rank": 15, "theme": "サービス・マーケティング", "headline": "AI使用の開示が生む非対称な印象", "title": "The Asymmetric Effect of AI-Mediated Communication: AI Disclosure Weakens Positive, But Not Negative, Social Inferences", "url": "https://doi.org/10.2139/ssrn.7501238", "authors": "Hyeran Kang ほか", "venue": "SSRN", "date": "2026-09-25", "summary": "事前登録した2つの実験（N=1,022）で、AIを使ったと明かすと、好ましいメッセージからの印象は弱まるが、否定的なメッセージからの印象は弱まらないという非対称性を示した。"}, {"rank": 16, "theme": "都市・インフラ政策", "headline": "有料道路の価値獲得モデル（インドネシア）", "title": "Developing a Toll Master Developer Model for Financially Sustainable Assigned Toll Roads: Integrating Value Capture and Corridor Development in Indonesia", "url": "https://doi.org/10.12688/f1000research.182913.1", "authors": "Muhammad Rozi Rinjayadi ほか", "venue": "F1000Research", "date": "2026-09-25", "summary": "インドネシアの有料道路で料金収入への依存を減らすため、沿線開発と地価上昇の価値獲得を一体で担う事業者モデルを、調査と専門家評価で設計した。"}, {"rank": 17, "theme": "VBI・橋梁SHM", "headline": "ウェーブレットで路面粗さを区間ごとに分類", "title": "A Localized Road Roughness Classification Algorithm Based on ISO 8608 using Continuous Wavelet Transform", "url": "https://doi.org/10.1109/access.2026.3734725", "authors": "Samuel Jung ほか", "venue": "IEEE Access", "date": "2026-09-24", "summary": "概要なし（タイトルから判断）。"}, {"rank": 18, "theme": "VBI・橋梁SHM", "headline": "欠けた構造応答をTransformerで復元", "title": "Time-frequency gated transformer for structural dynamic response reconstruction", "url": "https://doi.org/10.1038/s44172-026-00788-0", "authors": "Xueli Song ほか", "venue": "Communications Engineering", "date": "2026-09-22", "summary": "時間領域と周波数領域の特徴をゲートで統合するTransformerで、欠損した構造応答を復元する。"}, {"rank": 19, "theme": "会計情報科学", "headline": "年次報告書の記述を2言語モデルで測る", "title": "A bilingual fine-tuned language model for measuring digital technology integration in Arabic and English annual report narrative", "url": "https://doi.org/10.2139/ssrn.7517639", "authors": "Ahmad Alomari ほか", "venue": "SSRN", "date": "2026-09-24", "summary": "年次報告書の文を、AIやXBRLなど6種類のデジタル技術について「実際に使っているか、言及しているだけか」の段階で分類する、2言語対応の言語モデルを作った。"}, {"rank": 20, "theme": "職場AI・組織行動", "headline": "職場の感情マインドセットとJD-Rモデル", "title": "Emotion Mindsets at Work: Emotion Malleability Beliefs, Emotion Regulation, and Employee Well-Being in Two National Studies", "url": "https://doi.org/10.31234/osf.io/pgswc_v1", "authors": "Peihao Luo ほか", "venue": "PsyArXiv", "date": "2026-09-25", "summary": "2つの全国調査（計3,282人）で、仕事の要求度-資源モデルに「感情は変えられる」という信念を個人の資源として組み込み、感情調整とwell-beingとの関連を検証した。"}], "part2": [{"field": "物理", "headline": "ルテチウム光時計、確度は19桁目まで", "title": "Lu+ optical frequency references with accuracy verified at the 19th digit", "url": "https://doi.org/10.1038/s41586-026-11072-8", "authors": "K. J. Arnold ほか", "venue": "Nature", "date": "2026-09-23", "summary": "ルテチウムイオンを使った光周波数標準で、確度を19桁目まで検証した（概要なし、タイトルから判断）。", "why": "同じ号のNatureニュースで「これまでで最高の時計」と紹介された成果で、秒の定義の見直しや精密計測の基準を押し上げる。"}, {"field": "感染症・生態学", "headline": "新興感染症に残る人間活動の痕跡", "title": "The anthropogenic fingerprint on emerging infectious diseases", "url": "https://doi.org/10.1038/s41586-026-11058-6", "authors": "Rory Gibb ほか", "venue": "Nature", "date": "2026-09-23", "summary": "人間による生態系の改変や、人・野生動物・家畜の接触が、新興感染症の発生リスクの地理的な分布をどれだけ形づくっているかを広域で定量化した。", "why": "土地利用の変化と感染症の出現を結び付ける証拠を少数の事例を越えて示し、パンデミックに備えた監視の優先地域づくりに直結する。"}, {"field": "医学（がん）", "headline": "膵がん：KRAS阻害の効果をT細胞が持続させる", "title": "CD4 T cells convert transient responses to KRAS inhibition to durable remissions in pancreatic cancer", "url": "https://doi.org/10.1016/j.cell.2026.08.045", "authors": "Li Qiang ほか", "venue": "Cell", "date": "2026-09-23", "summary": "膵がんでKRAS阻害薬への一時的な反応を、CD4 T細胞が持続的な寛解に変えることを示した（概要なし、タイトルから判断）。", "why": "KRAS阻害薬の実用化が近づくなか、効果を長続きさせる鍵が免疫にあることを示し、併用療法の設計を左右しうる。"}, {"field": "神経科学", "headline": "脳疾患ごとの細胞の脆弱性アトラス", "title": "Single-cell atlas of transcriptomic vulnerability across brain disorders", "url": "https://doi.org/10.1038/s41586-025-09573-z", "authors": "Donghoon Lee ほか", "venue": "Nature", "date": "2026-09-23", "summary": "1,494人の脳試料から単一細胞レベルの遺伝子発現アトラスを作り、神経変性疾患と精神疾患に共通する脆弱性と、疾患ごとに固有の脆弱性を細胞の種類ごとに示した。", "why": "同じ号の脳アトラス論文群とともに、アルツハイマー病などの脳疾患の原因となる細胞を絞り込む基盤データになる。"}, {"field": "生化学", "headline": "哺乳類は元素状の硫黄で細胞死を防ぐ", "title": "Mammals produce cyclo-octasulfur to suppress lipid peroxidation and ferroptosis", "url": "https://doi.org/10.1126/science.aec5473", "authors": "Uladzimir Barayeu ほか", "venue": "Science", "date": "2026-09-24", "summary": "哺乳類の細胞が元素状の硫黄（S8）を作ってミトコンドリアの膜や脂肪滴にため、脂質の過酸化と細胞死（フェロトーシス）を抑えていることを示した。", "why": "哺乳類で元素状硫黄の生成と役割が見つかったのは予想外で、フェロトーシスが関わる疾患の治療標的を広げる。"}, {"field": "エネルギー・材料", "headline": "リチウム金属電池の寿命は電解液の枯渇で決まる", "title": "Unlocking cycle life of lithium metal batteries", "url": "https://doi.org/10.1126/science.aee1630", "authors": "Zheng Li ほか", "venue": "Science", "date": "2026-09-24", "summary": "リチウム金属電池では、クーロン効率では寿命を予測できず、不安定な界面膜による電解液の枯渇が寿命を決めていることを示した。", "why": "次世代の高容量電池の評価指標そのものを見直す成果で、電気自動車などの電池開発の方向づけに影響する。"}, {"field": "社会科学・金融", "headline": "銀行の取引記録で経済的虐待を捉える", "title": "Banking records reveal characteristics of financial abuse", "url": "https://doi.org/10.1038/s41586-026-11049-7", "authors": "Anna Trendl ほか", "venue": "Nature", "date": "2026-09-23", "summary": "匿名化された銀行の取引記録を用いて、家庭内の経済的虐待（お金の支配）の実態を大規模に特徴づけた。", "why": "小規模な質的調査に頼っていた問題を取引データで大規模に捉えた。金融データを社会課題に使う好例でもある。"}, {"field": "経済学", "headline": "賃金格差は労働運動を弱めるか", "title": "How Does Wage Inequality Affect the Labor Movement?", "url": "https://doi.org/10.1093/qje/qjag046", "authors": "Barbara Biasi ほか", "venue": "The Quarterly Journal of Economics", "date": "2026-09-25", "summary": "組合の組織者へのビネット実験、教員の賃金格差を広げた制度変更、2023年の脚本家ストでの情報介入という3つの設計で、賃金格差が労働運動に与える影響を検証した。", "why": "格差の拡大が労働者の連帯を弱めるかという古くからの問いに、複数の因果推論の設計で答えた経済学トップ誌の成果。"}, {"field": "生態学・日本社会", "headline": "クマ被害急増の主因は木の実の不作の重なり", "title": "Compound food failure on a deteriorated mast system drives Japan's bear conflict crisis", "url": "https://doi.org/10.1126/sciadv.aej8134", "authors": "Hengjun Xiao ほか", "venue": "Science Advances", "date": "2026-09-23", "summary": "18年分のデータから、2025年に232人の死傷者を出した日本のクマ被害の急増は、個体数の増加よりも、劣化した木の実（堅果）の供給で不作が同時に重なったことで説明できると示した。", "why": "日本で社会問題になっているクマの出没について原因の見立てを変える結果で、個体数管理に偏りがちな対策の見直しにつながる。"}, {"field": "AI", "headline": "世界モデルに「物体の永続性」を学ばせる", "title": "Training Object Permanence in World Models", "url": "https://arxiv.org/abs/2609.28654", "authors": "Haotian Zhang ほか", "venue": "arXiv（Hugging Face投票187）", "date": "2026-09-25", "summary": "動画生成モデルに「見えなくなっても物は存在し続ける」という物体の永続性が備わっているかを検証し、それを学習させる方法を示した。", "why": "動画生成モデルを物理的な常識をもつ「世界モデル」にする研究の中心的な課題で、この数日のHugging Faceで最も票を集めた。"}]}</script>
+<script id="archive-data" type="application/json">["2026-09-26"]</script>
+<script id="page-meta" type="application/json">{"kind": "latest"}</script>
+<script>
+(function () {
+  "use strict";
+  var REPORT = JSON.parse(document.getElementById("report-data").textContent);
+  var ARCHIVE = JSON.parse(document.getElementById("archive-data").textContent);
+  var META = JSON.parse(document.getElementById("page-meta").textContent);
+  var THEME_CLASS = {
+    "VBI・橋梁SHM": "--t1", "会計情報科学": "--t2", "サービス・マーケティング": "--t3",
+    "包摂的コミュニティ・社会": "--t4", "LLM熟議・ペルソナ": "--t5", "都市・インフラ政策": "--t6", "職場AI・組織行動": "--t7"
+  };
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+  var marks = store.get("pd-marks-v1", {});
+  var saved = store.get("pd-pos-" + REPORT.date, { view: "part1", index: 0 });
+  var state = { view: saved.view || "part1", index: saved.index || 0, lastCardView: saved.view === "part2" ? "part2" : "part1" };
+  var stage = document.getElementById("stage");
+  var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+  // date selector
+  document.getElementById("daylabel").textContent = " " + REPORT.date;
+  var sel = document.getElementById("datesel");
+  ARCHIVE.forEach(function (d, i) {
+    var o = el("option", null, d + (i === 0 ? "（最新）" : ""));
+    o.value = d; if (d === REPORT.date) o.selected = true; sel.appendChild(o);
+  });
+  sel.addEventListener("change", function () {
+    var d = sel.value, latest = ARCHIVE[0];
+    var href = META.kind === "archive" ? (d === latest ? "../index.html" : d + ".html") : (d === latest ? "index.html" : "archive/" + d + ".html");
+    location.href = href;
+  });
+
+  function items(view) {
+    if (view === "part1") return REPORT.part1 || [];
+    if (view === "part2") return REPORT.part2 || [];
+    if (view === "marks") return Object.keys(marks).map(function (k) { return marks[k]; }).sort(function (a, b) { return (b.markedAt || "").localeCompare(a.markedAt || ""); });
+    return [];
+  }
+  function current() { var list = items(state.view); return list[Math.max(0, Math.min(state.index, list.length - 1))]; }
+  function save() { store.set("pd-pos-" + REPORT.date, { view: state.view, index: state.index }); }
+
+  function renderTabs() {
+    Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.view === state.view));
+    });
+  }
+
+  function renderCard() {
+    var list = items(state.view);
+    stage.innerHTML = "";
+    var card = el("article", "card");
+    if (!list.length) {
+      card.appendChild(el("p", "empty", state.view === "marks"
+        ? "まだ★がありません。気になった論文で ☆ を押すと、ここにまとまります（この端末に保存）。"
+        : "この日の論文はありません。"));
+      stage.appendChild(card); updateControls(); return;
+    }
+    state.index = Math.max(0, Math.min(state.index, list.length - 1));
+    var it = list[state.index];
+    var head = el("div", "cardhead");
+    head.appendChild(el("span", "pos", (state.index + 1) + " / " + list.length + (it.rank ? "　" + it.rank + "位" : "")));
+    var chipText = it.theme || it.field || "";
+    if (chipText) {
+      var chip = el("span", "chip", chipText);
+      chip.style.background = "var(" + (THEME_CLASS[it.theme] || "--accent-soft") + ")";
+      head.appendChild(chip);
+    }
+    card.appendChild(head);
+    card.appendChild(el("h1", "headline", it.headline || it.title));
+    var sum = el("p", "summary"); sum.textContent = it.summary || ""; card.appendChild(sum);
+    var why = it.reason || it.why;
+    if (why) {
+      var r = el("p", "reason");
+      r.appendChild(el("span", "label", it.reason ? "関連する理由" : "重要な理由"));
+      r.appendChild(document.createTextNode(why));
+      card.appendChild(r);
+    }
+    var orig = el("p", "orig");
+    var a = el("a", null, it.title); a.href = it.url; a.target = "_blank"; a.rel = "noopener";
+    orig.appendChild(a); card.appendChild(orig);
+    card.appendChild(el("p", "meta", [it.authors, it.venue, it.date].filter(Boolean).join("｜") + (it.fromDate ? "｜" + it.fromDate + " のレポート" : "")));
+    if (state.view === "part1" && state.index === 0 && REPORT.intro) card.appendChild(el("p", "intro", REPORT.intro));
+    stage.appendChild(card);
+    updateControls();
+  }
+
+  function renderList() {
+    stage.innerHTML = "";
+    var wrap = el("div", "list");
+    [["part1", "関連する論文"], ["part2", "分野を問わない注目論文"]].forEach(function (p) {
+      var list = items(p[0]);
+      wrap.appendChild(el("div", "label", p[1] + "（" + list.length + "）"));
+      list.forEach(function (it, i) {
+        var row = el("button", "row"); row.type = "button";
+        row.appendChild(el("span", "n", String(i + 1)));
+        var box = el("span");
+        box.appendChild(el("div", "h", (marks[it.url] ? "★ " : "") + (it.headline || it.title)));
+        box.appendChild(el("div", "s", [it.theme || it.field, it.venue].filter(Boolean).join("｜")));
+        row.appendChild(box);
+        row.addEventListener("click", function () { state.view = p[0]; state.index = i; state.lastCardView = p[0]; render(); });
+        wrap.appendChild(row);
+      });
+    });
+    stage.appendChild(wrap);
+    updateControls();
+  }
+
+  function updateControls() {
+    var list = items(state.view), card = state.view !== "list" && list.length > 0;
+    document.getElementById("prev").disabled = !card || state.index <= 0;
+    document.getElementById("next").disabled = !card || state.index >= list.length - 1;
+    document.getElementById("speak").disabled = !card || !("speechSynthesis" in window);
+    document.getElementById("auto").disabled = !card || !("speechSynthesis" in window);
+    var m = document.getElementById("mark"), it = card ? current() : null;
+    m.disabled = !card;
+    var on = !!(it && marks[it.url]);
+    m.setAttribute("aria-pressed", String(on)); m.textContent = on ? "★" : "☆";
+  }
+
+  function render() { renderTabs(); if (state.view === "list") renderList(); else renderCard(); save(); }
+
+  function go(delta) {
+    var list = items(state.view);
+    var n = Math.max(0, Math.min(state.index + delta, list.length - 1));
+    if (n !== state.index) { state.index = n; stopSpeech(false); render(); window.scrollTo(0, 0); }
+  }
+
+  // speech
+  var auto = false, wakeLock = null, rate = store.get("pd-rate", 1.1);
+  function jaVoice() {
+    var vs = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+    return vs.filter(function (v) { return /^ja/i.test(v.lang); })[0] || null;
+  }
+  function textOf(it) {
+    return [it.headline, it.summary && it.summary.indexOf("概要なし") === 0 ? "" : it.summary, it.reason || it.why].filter(Boolean).join("。 ");
+  }
+  function speak() {
+    if (!("speechSynthesis" in window)) return;
+    var it = current(); if (!it) return;
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(textOf(it));
+    u.lang = "ja-JP"; u.rate = rate; var v = jaVoice(); if (v) u.voice = v;
+    u.onend = function () {
+      if (!auto) return;
+      var list = items(state.view);
+      if (state.index < list.length - 1) { state.index++; render(); setTimeout(speak, 600); }
+      else { setAuto(false); }
+    };
+    speechSynthesis.speak(u);
+  }
+  function stopSpeech(keepAuto) { if (window.speechSynthesis) speechSynthesis.cancel(); if (!keepAuto && auto) setAuto(false); }
+  function setAuto(on) {
+    auto = on;
+    document.getElementById("auto").setAttribute("aria-pressed", String(on));
+    if (on && navigator.wakeLock) { navigator.wakeLock.request("screen").then(function (l) { wakeLock = l; }).catch(function () {}); }
+    if (!on && wakeLock) { try { wakeLock.release(); } catch (e) {} wakeLock = null; }
+  }
+  document.getElementById("speak").addEventListener("click", function () {
+    if (window.speechSynthesis && speechSynthesis.speaking) { stopSpeech(false); } else { speak(); }
+  });
+  document.getElementById("auto").addEventListener("click", function () {
+    if (auto) { setAuto(false); stopSpeech(true); } else { setAuto(true); speak(); }
+  });
+
+  // marks
+  document.getElementById("mark").addEventListener("click", function () {
+    var it = current(); if (!it) return;
+    if (marks[it.url]) { delete marks[it.url]; }
+    else {
+      marks[it.url] = { headline: it.headline, title: it.title, url: it.url, summary: it.summary, reason: it.reason, why: it.why,
+        theme: it.theme, field: it.field, venue: it.venue, authors: it.authors, date: it.date, fromDate: REPORT.date,
+        markedAt: new Date().toISOString() };
+    }
+    store.set("pd-marks-v1", marks);
+    if (state.view === "marks") render(); else updateControls();
+  });
+
+  document.getElementById("prev").addEventListener("click", function () { go(-1); });
+  document.getElementById("next").addEventListener("click", function () { go(1); });
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) {
+    b.addEventListener("click", function () {
+      stopSpeech(false);
+      state.view = b.dataset.view; if (state.view !== "list") { state.index = 0; }
+      render();
+    });
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") go(1); else if (e.key === "ArrowLeft") go(-1);
+  });
+  var sx = null, sy = null;
+  stage.addEventListener("touchstart", function (e) { var t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY; }, { passive: true });
+  stage.addEventListener("touchend", function (e) {
+    if (sx === null || state.view === "list") return;
+    var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    sx = sy = null;
+  }, { passive: true });
+  if (window.speechSynthesis && speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = function () {};
+
+  render();
+})();
+</script>
+</body>
+</html>
