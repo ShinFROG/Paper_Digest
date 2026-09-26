@@ -120,6 +120,26 @@ a { color: var(--accent); }
 .speechbar button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .intro { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.ask {
+  align-self: flex-start; border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+  border-radius: 12px; padding: 10px 14px; font-size: 15px; font-weight: 700;
+}
+.sheet-backdrop {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 20;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.sheet {
+  width: 100%; max-width: 720px; background: var(--surface); border-radius: 18px 18px 0 0;
+  padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 16px); display: grid; gap: 10px;
+}
+.sheet h2 { margin: 0; font-size: 18px; }
+.sheet p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.6; }
+.sheet .btn { width: 100%; }
+.sheet textarea {
+  width: 100%; height: 38vh; font: 13px/1.6 var(--font); border-radius: 10px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink); padding: 10px;
+}
 @media (min-width: 700px) { .headline { font-size: 30px; } }
 </style>
 </head>
@@ -147,6 +167,18 @@ a { color: var(--accent); }
     <button class="btn icon" id="auto" type="button" aria-label="連続で読み上げ" aria-pressed="false">⏯</button>
     <button class="btn primary" id="next" type="button" aria-label="次の論文">次 →</button>
   </footer>
+</div>
+
+<div class="sheet-backdrop" id="sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <h2 id="sheet-title">この論文の解説を頼む</h2>
+    <p id="sheet-paper"></p>
+    <button class="btn primary" id="copy-brief" type="button">要点だけで依頼文をコピー</button>
+    <button class="btn" id="copy-full" type="button">節ごとに詳しくで依頼文をコピー</button>
+    <p id="sheet-status" aria-live="polite"></p>
+    <textarea id="sheet-text" readonly hidden aria-label="依頼文"></textarea>
+    <button class="btn" id="sheet-close" type="button">閉じる</button>
+  </div>
 </div>
 
 <script id="report-data" type="application/json">{"date": "2026-09-26", "intro": "新着約1万2千件（arXiv、SSRN、Research Square、bioRxiv、Preprints.org、学術誌、RePEc、J-STAGE など）と、主要誌・注目AI論文266件から選びました。", "part1": [{"rank": 1, "theme": "VBI・橋梁SHM", "headline": "車軸の傾きが車両走査法の結果をゆがめる", "title": "Incorporating wheel axle inclination effects into a vehicle-bridge interaction system for vehicle scanning method", "url": "https://doi.org/10.1142/s0219455428710022", "authors": "Judy P. Yang ほか", "venue": "International Journal of Structural Stability and Dynamics", "date": "2026-09-24", "summary": "試験車の車軸の傾きが車両応答に余分な周波数成分を生み、車両走査法の結果の解釈に影響することを、理論の定式化とパラメータの検討で示した。"}, {"rank": 2, "theme": "会計情報科学", "headline": "預金残高の動きで中小企業の財務困窮予測が向上", "title": "Enhancing SME financial distress prediction by integrating financial and deposit dynamics indicators", "url": "https://doi.org/10.1080/00472778.2026.2730423", "authors": "Kaito Terada ほか", "venue": "Journal of Small Business Management", "date": "2026-09-16", "summary": "日本の中小企業データで、流動性預金残高の動きを財務比率と組み合わせると、財務困窮の予測精度が統計的に有意に上がることを示した。"}, {"rank": 3, "theme": "VBI・橋梁SHM", "headline": "一般車両とスマホで橋を見守る基盤", "title": "A crowdsensing platform for structural health monitoring of rural bridge infrastructure", "url": "https://doi.org/10.12688/openreseurope.22915.2", "authors": "Nikolaos D. Tantaroudas ほか", "venue": "Open Research Europe", "date": "2026-09-22", "summary": "スマートフォンにつないだUSB加速度計で走行車両から橋の振動を集める、低予算の自治体向けクラウドセンシング基盤を実装した。"}, {"rank": 4, "theme": "会計情報科学", "headline": "実行可能な反実仮想説明を作る「FCx」", "title": "FCx: An algorithm for finding Feasible Counterfactual Explanations", "url": "https://doi.org/10.48550/arxiv.2609.19383", "authors": "Kleopatra Markou ほか", "venue": "arXiv", "date": "2026-09-16", "summary": "ドメイン知識による制約と、データから因果推論で推定した制約の両方を課し、実行可能な反実仮想説明を効率よく生成する。"}, {"rank": 5, "theme": "VBI・橋梁SHM", "headline": "点検記録から鋼桁橋のFEモデルを自動生成", "title": "Evidence-aware automated finite-element model generation for steel girder bridges from incomplete inspection archives", "url": "https://doi.org/10.2139/ssrn.7517644", "authors": "Shreejan Maharjan ほか", "venue": "SSRN", "date": "2026-09-24", "summary": "部材寸法が欠けた点検記録から、各パラメータの出典と確信度を保持したまま、鋼桁橋のFEモデルを自動で生成する枠組み。"}, {"rank": 6, "theme": "VBI・橋梁SHM", "headline": "実橋に損傷を与えたデータで損傷検知を検証", "title": "Unsupervised damage detection in a full-scale bridge using a frequency-domain autoencoder", "url": "https://doi.org/10.1016/j.rineng.2026.113055", "authors": "Cian Ó Cathasaigh ほか", "venue": "Results in Engineering", "date": "2026-09-17", "summary": "実橋に段階的な損傷を与えて計測したデータで、モード別にまとめた周波数領域オートエンコーダによる教師なし損傷検知を検証した。"}, {"rank": 7, "theme": "包摂的コミュニティ・社会", "headline": "「社会的つながり」の次元構造（英国4.1万人）", "title": "The Multidimensional Structure of Social Connectedness and Its Associations with Wellbeing and Quality of Life", "url": "https://doi.org/10.21203/rs.3.rs-10420555/v1", "authors": "Smyth C ほか", "venue": "Research Square", "date": "2026-09-23", "summary": "英国の世帯パネル調査（41,242人）で、関係の質・家族の支え・信頼・近隣の結束・孤独が一つの「社会的つながり」の構成概念かを確認的因子分析で比べ、well-beingとの関連を調べた。"}, {"rank": 8, "theme": "会計情報科学", "headline": "財務諸表を丸ごと長期予測する「Forma」", "title": "Long-Horizon Forecasting of Complete Financial Statements with Forma", "url": "https://econpapers.repec.org/RePEc:arx:papers:2608.11327", "authors": "Travis L. Johnson ほか", "venue": "arXiv（RePEc NEP 計算経済）", "date": "2026-08", "summary": "財務諸表の78科目を1〜20四半期先まで同時に予測するベンチマークと、諸表を（科目、四半期、値）の組の集合として読むTransformer「Forma」を提案した。"}, {"rank": 9, "theme": "会計情報科学", "headline": "仕訳テストと機械学習で元帳の異常を検知", "title": "Anomaly Detection in General Ledger Data: Results from a Hybrid Approach", "url": "https://doi.org/10.48550/arxiv.2609.18228", "authors": "Jan Gronewald ほか", "venue": "arXiv", "date": "2026-09-16", "summary": "監査の仕訳テスト（JET）と機械学習の異常検知を組み合わせ、誤検知の多い抽出リストを絞り込む方法を比べた途中報告。"}, {"rank": 10, "theme": "LLM熟議・ペルソナ", "headline": "LLMの合成回答者を実際の調査と照合", "title": "Synthetic Respondents in Survey Research: An Empirical Test Against a Student Survey", "url": "https://doi.org/10.5281/zenodo.22939960", "authors": "Inna Gazieva", "venue": "Zenodo", "date": "2026-09-24", "summary": "実在の回答者の属性から作ったLLMの「デジタルツイン」に学生調査（N=1,795、39項目）へ回答させ、実際の回答と照合して、合成回答者を使える範囲を検証した。"}, {"rank": 11, "theme": "LLM熟議・ペルソナ", "headline": "行動研究の参加者はAIで置き換えられない", "title": "AI cannot replace human participants in behavioral research", "url": "https://doi.org/10.1073/pnas.2611363123", "authors": "Jim Hoover ほか", "venue": "PNAS", "date": "2026-09-23", "summary": "概要なし（タイトルから判断）。"}, {"rank": 12, "theme": "LLM熟議・ペルソナ", "headline": "AIが司会するインタビューとデジタルツイン", "title": "AI-Moderated Interviews for Market Research and Digital Twins Calibration", "url": "https://arxiv.org/abs/2609.29143", "authors": "Yuting Deng ほか", "venue": "arXiv", "date": "2026-09-25", "summary": "事前登録した実験（N=317）で、AIが司会するインタビューは人間の司会と同等の深さで、同じ予算ならより多くの顧客ニーズを引き出した。"}, {"rank": 13, "theme": "サービス・マーケティング", "headline": "遅延便の回復失敗が生む感情と口コミ", "title": "Anatomy of a Desperate Wait: Passengers' Emotions and Behavioral Reactions to the Service Recovery Deficiency for Delayed Flights by Airlines", "url": "https://doi.org/10.26650/jtl.2026.1820008", "authors": "Sadiye Oya Işıkcı", "venue": "Journal of Transportation and Logistics", "date": "2026-09-23", "summary": "遅延便でのサービス回復の不足が、怒り・不安・不満という感情ごとに、苦情・否定的な口コミ・乗り換えへ異なる影響を与えることを示した。"}, {"rank": 14, "theme": "会計情報科学", "headline": "会計制約＋LLM＋グラフNNで異常仕訳を検出", "title": "Constraint-Guided LLM-GNN Framework for Anomalous Journal Entry Detection in Auditing", "url": "https://doi.org/10.20944/preprints202609.2005.v1", "authors": "Jiaming Chen ほか", "venue": "Preprints.org", "date": "2026-09-23", "summary": "仕訳間の関係を異種グラフNNで、会計上の制約を明示的なルールで、文脈をLLMで扱い、異常な仕訳を検出する。"}, {"rank": 15, "theme": "サービス・マーケティング", "headline": "AI使用の開示が生む非対称な印象", "title": "The Asymmetric Effect of AI-Mediated Communication: AI Disclosure Weakens Positive, But Not Negative, Social Inferences", "url": "https://doi.org/10.2139/ssrn.7501238", "authors": "Hyeran Kang ほか", "venue": "SSRN", "date": "2026-09-25", "summary": "事前登録した2つの実験（N=1,022）で、AIを使ったと明かすと、好ましいメッセージからの印象は弱まるが、否定的なメッセージからの印象は弱まらないという非対称性を示した。"}, {"rank": 16, "theme": "都市・インフラ政策", "headline": "有料道路の価値獲得モデル（インドネシア）", "title": "Developing a Toll Master Developer Model for Financially Sustainable Assigned Toll Roads: Integrating Value Capture and Corridor Development in Indonesia", "url": "https://doi.org/10.12688/f1000research.182913.1", "authors": "Muhammad Rozi Rinjayadi ほか", "venue": "F1000Research", "date": "2026-09-25", "summary": "インドネシアの有料道路で料金収入への依存を減らすため、沿線開発と地価上昇の価値獲得を一体で担う事業者モデルを、調査と専門家評価で設計した。"}, {"rank": 17, "theme": "VBI・橋梁SHM", "headline": "ウェーブレットで路面粗さを区間ごとに分類", "title": "A Localized Road Roughness Classification Algorithm Based on ISO 8608 using Continuous Wavelet Transform", "url": "https://doi.org/10.1109/access.2026.3734725", "authors": "Samuel Jung ほか", "venue": "IEEE Access", "date": "2026-09-24", "summary": "概要なし（タイトルから判断）。"}, {"rank": 18, "theme": "VBI・橋梁SHM", "headline": "欠けた構造応答をTransformerで復元", "title": "Time-frequency gated transformer for structural dynamic response reconstruction", "url": "https://doi.org/10.1038/s44172-026-00788-0", "authors": "Xueli Song ほか", "venue": "Communications Engineering", "date": "2026-09-22", "summary": "時間領域と周波数領域の特徴をゲートで統合するTransformerで、欠損した構造応答を復元する。"}, {"rank": 19, "theme": "会計情報科学", "headline": "年次報告書の記述を2言語モデルで測る", "title": "A bilingual fine-tuned language model for measuring digital technology integration in Arabic and English annual report narrative", "url": "https://doi.org/10.2139/ssrn.7517639", "authors": "Ahmad Alomari ほか", "venue": "SSRN", "date": "2026-09-24", "summary": "年次報告書の文を、AIやXBRLなど6種類のデジタル技術について「実際に使っているか、言及しているだけか」の段階で分類する、2言語対応の言語モデルを作った。"}, {"rank": 20, "theme": "職場AI・組織行動", "headline": "職場の感情マインドセットとJD-Rモデル", "title": "Emotion Mindsets at Work: Emotion Malleability Beliefs, Emotion Regulation, and Employee Well-Being in Two National Studies", "url": "https://doi.org/10.31234/osf.io/pgswc_v1", "authors": "Peihao Luo ほか", "venue": "PsyArXiv", "date": "2026-09-25", "summary": "2つの全国調査（計3,282人）で、仕事の要求度-資源モデルに「感情は変えられる」という信念を個人の資源として組み込み、感情調整とwell-beingとの関連を検証した。"}], "part2": [{"field": "物理", "headline": "ルテチウム光時計、確度は19桁目まで", "title": "Lu+ optical frequency references with accuracy verified at the 19th digit", "url": "https://doi.org/10.1038/s41586-026-11072-8", "authors": "K. J. Arnold ほか", "venue": "Nature", "date": "2026-09-23", "summary": "ルテチウムイオンを使った光周波数標準で、確度を19桁目まで検証した（概要なし、タイトルから判断）。", "why": "同じ号のNatureニュースで「これまでで最高の時計」と紹介された成果で、秒の定義の見直しや精密計測の基準を押し上げる。"}, {"field": "感染症・生態学", "headline": "新興感染症に残る人間活動の痕跡", "title": "The anthropogenic fingerprint on emerging infectious diseases", "url": "https://doi.org/10.1038/s41586-026-11058-6", "authors": "Rory Gibb ほか", "venue": "Nature", "date": "2026-09-23", "summary": "人間による生態系の改変や、人・野生動物・家畜の接触が、新興感染症の発生リスクの地理的な分布をどれだけ形づくっているかを広域で定量化した。", "why": "土地利用の変化と感染症の出現を結び付ける証拠を少数の事例を越えて示し、パンデミックに備えた監視の優先地域づくりに直結する。"}, {"field": "医学（がん）", "headline": "膵がん：KRAS阻害の効果をT細胞が持続させる", "title": "CD4 T cells convert transient responses to KRAS inhibition to durable remissions in pancreatic cancer", "url": "https://doi.org/10.1016/j.cell.2026.08.045", "authors": "Li Qiang ほか", "venue": "Cell", "date": "2026-09-23", "summary": "膵がんでKRAS阻害薬への一時的な反応を、CD4 T細胞が持続的な寛解に変えることを示した（概要なし、タイトルから判断）。", "why": "KRAS阻害薬の実用化が近づくなか、効果を長続きさせる鍵が免疫にあることを示し、併用療法の設計を左右しうる。"}, {"field": "神経科学", "headline": "脳疾患ごとの細胞の脆弱性アトラス", "title": "Single-cell atlas of transcriptomic vulnerability across brain disorders", "url": "https://doi.org/10.1038/s41586-025-09573-z", "authors": "Donghoon Lee ほか", "venue": "Nature", "date": "2026-09-23", "summary": "1,494人の脳試料から単一細胞レベルの遺伝子発現アトラスを作り、神経変性疾患と精神疾患に共通する脆弱性と、疾患ごとに固有の脆弱性を細胞の種類ごとに示した。", "why": "同じ号の脳アトラス論文群とともに、アルツハイマー病などの脳疾患の原因となる細胞を絞り込む基盤データになる。"}, {"field": "生化学", "headline": "哺乳類は元素状の硫黄で細胞死を防ぐ", "title": "Mammals produce cyclo-octasulfur to suppress lipid peroxidation and ferroptosis", "url": "https://doi.org/10.1126/science.aec5473", "authors": "Uladzimir Barayeu ほか", "venue": "Science", "date": "2026-09-24", "summary": "哺乳類の細胞が元素状の硫黄（S8）を作ってミトコンドリアの膜や脂肪滴にため、脂質の過酸化と細胞死（フェロトーシス）を抑えていることを示した。", "why": "哺乳類で元素状硫黄の生成と役割が見つかったのは予想外で、フェロトーシスが関わる疾患の治療標的を広げる。"}, {"field": "エネルギー・材料", "headline": "リチウム金属電池の寿命は電解液の枯渇で決まる", "title": "Unlocking cycle life of lithium metal batteries", "url": "https://doi.org/10.1126/science.aee1630", "authors": "Zheng Li ほか", "venue": "Science", "date": "2026-09-24", "summary": "リチウム金属電池では、クーロン効率では寿命を予測できず、不安定な界面膜による電解液の枯渇が寿命を決めていることを示した。", "why": "次世代の高容量電池の評価指標そのものを見直す成果で、電気自動車などの電池開発の方向づけに影響する。"}, {"field": "社会科学・金融", "headline": "銀行の取引記録で経済的虐待を捉える", "title": "Banking records reveal characteristics of financial abuse", "url": "https://doi.org/10.1038/s41586-026-11049-7", "authors": "Anna Trendl ほか", "venue": "Nature", "date": "2026-09-23", "summary": "匿名化された銀行の取引記録を用いて、家庭内の経済的虐待（お金の支配）の実態を大規模に特徴づけた。", "why": "小規模な質的調査に頼っていた問題を取引データで大規模に捉えた。金融データを社会課題に使う好例でもある。"}, {"field": "経済学", "headline": "賃金格差は労働運動を弱めるか", "title": "How Does Wage Inequality Affect the Labor Movement?", "url": "https://doi.org/10.1093/qje/qjag046", "authors": "Barbara Biasi ほか", "venue": "The Quarterly Journal of Economics", "date": "2026-09-25", "summary": "組合の組織者へのビネット実験、教員の賃金格差を広げた制度変更、2023年の脚本家ストでの情報介入という3つの設計で、賃金格差が労働運動に与える影響を検証した。", "why": "格差の拡大が労働者の連帯を弱めるかという古くからの問いに、複数の因果推論の設計で答えた経済学トップ誌の成果。"}, {"field": "生態学・日本社会", "headline": "クマ被害急増の主因は木の実の不作の重なり", "title": "Compound food failure on a deteriorated mast system drives Japan's bear conflict crisis", "url": "https://doi.org/10.1126/sciadv.aej8134", "authors": "Hengjun Xiao ほか", "venue": "Science Advances", "date": "2026-09-23", "summary": "18年分のデータから、2025年に232人の死傷者を出した日本のクマ被害の急増は、個体数の増加よりも、劣化した木の実（堅果）の供給で不作が同時に重なったことで説明できると示した。", "why": "日本で社会問題になっているクマの出没について原因の見立てを変える結果で、個体数管理に偏りがちな対策の見直しにつながる。"}, {"field": "AI", "headline": "世界モデルに「物体の永続性」を学ばせる", "title": "Training Object Permanence in World Models", "url": "https://arxiv.org/abs/2609.28654", "authors": "Haotian Zhang ほか", "venue": "arXiv（Hugging Face投票187）", "date": "2026-09-25", "summary": "動画生成モデルに「見えなくなっても物は存在し続ける」という物体の永続性が備わっているかを検証し、それを学習させる方法を示した。", "why": "動画生成モデルを物理的な常識をもつ「世界モデル」にする研究の中心的な課題で、この数日のHugging Faceで最も票を集めた。"}]}</script>
@@ -233,6 +265,9 @@ a { color: var(--accent); }
     var orig = el("p", "orig");
     var a = el("a", null, it.title); a.href = it.url; a.target = "_blank"; a.rel = "noopener";
     orig.appendChild(a); card.appendChild(orig);
+    var ask = el("button", "ask", "解説を頼む"); ask.type = "button";
+    ask.addEventListener("click", function () { openSheet(it); });
+    card.appendChild(ask);
     card.appendChild(el("p", "meta", [it.authors, it.venue, it.date].filter(Boolean).join("｜") + (it.fromDate ? "｜" + it.fromDate + " のレポート" : "")));
     if (state.view === "part1" && state.index === 0 && REPORT.intro) card.appendChild(el("p", "intro", REPORT.intro));
     stage.appendChild(card);
@@ -330,6 +365,66 @@ a { color: var(--accent); }
     if (state.view === "marks") render(); else updateControls();
   });
 
+  // request for an explanation, following the owner's paper-review rules
+  var REQUEST = [
+    "次の論文を、私向けにわかりやすく解説してください。",
+    "",
+    "- 論文：{paper}",
+    "- 読者：私",
+    "- 詳しさ：{depth}",
+    "- 成果物：会話での解説のみ。ファイルは作らない。",
+    "",
+    "進め方",
+    "- 研究用ドライブを読める環境なら、最初に skill「shin-paper-explain」を使う（Claude Code は /shin-paper-explain、Codex は $shin-paper-explain。見つからなければ agent-config の skills/shin-paper-explain/SKILL.md を読む）。読めない環境では、以下の手順だけで進める。",
+    "- 論文ファイルが手元になければ、対象案件の文献フォルダ（研究案件は B_research の INDEX.md から探す）、DOI・出版社の一次資料の順に探す。",
+    "- サブエージェントは使わない。",
+    "",
+    "手順",
+    "1. 原文を読んでから書く。本文・図表・付録まで確かめる。概要しか読めないときは、その範囲の解説だと最初に書く。",
+    "2. 次の順で説明する。",
+    "   (1) 一言で：この論文で何ができるようになったか（題名の言い換えにしない）",
+    "   (2) 問い：何が課題で、従来の方法のどこが足りないか",
+    "   (3) 手法：入力・出力と、なぜそれで解けるかの直観。核の式は意味を言葉で添え、具体例を一つ通す",
+    "   (4) 検証：データ・比較対象・評価指標。何をもって良いとするかを結果より先に示す",
+    "   (5) 結果：主要な図表の読み方（軸、どこを見るか、何が言えるか）と数値",
+    "   (6) 限界：著者が認める限界と、残る疑問。私の研究への示唆は、求めたときだけ加える",
+    "3. 数値・主張には節・図・式・ページを添える。論文の主張、解説として補った背景、あなたの解釈を区別する。",
+    "4. 数値を孫引きしない。未査読のプレプリントはその旨を書く。専門用語は初出で定義し、英語の原語を併記する。比喩で正確さを落とさない。",
+    "5. 答える前に、書いた数値・図表番号・主張を原文と照合する。照合できなかった箇所は推測で埋めず「未確認」と書く。",
+    "",
+    "出力",
+    "- (1)〜(6) を見出しにして日本語で書く。「要点だけ」のときは (1) と主要な数点に絞る。",
+    "- 最後に「確認できなかった点」を1〜3行で書く（なければ「なし」）。",
+    "- 解説教科書や論文紹介スライドを作る依頼に変わったら、SKILL.md の表にある正本（例：研究論文解説の paper_guides）に従い、この会話用の手順は使わない。"
+  ].join("\n");
+  var sheet = document.getElementById("sheet"), sheetItem = null;
+  var sheetText = document.getElementById("sheet-text"), sheetStatus = document.getElementById("sheet-status");
+  function openSheet(it) {
+    sheetItem = it;
+    document.getElementById("sheet-paper").textContent = it.headline || it.title;
+    sheetStatus.textContent = ""; sheetText.hidden = true;
+    sheet.hidden = false;
+    document.getElementById("copy-brief").focus();
+  }
+  function closeSheet() { sheet.hidden = true; sheetItem = null; }
+  function copyRequest(depth) {
+    if (!sheetItem) return;
+    var text = REQUEST.replace("{paper}", sheetItem.title + "（" + sheetItem.url + "）").replace("{depth}", depth);
+    var fallback = function () {
+      sheetText.value = text; sheetText.hidden = false; sheetText.focus(); sheetText.select();
+      sheetStatus.textContent = "自動でコピーできませんでした。下の文を選んでコピーしてください。";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        sheetStatus.textContent = "コピーしました（" + depth + "）。Claude Code か Codex に貼り付けてください。";
+      }, fallback);
+    } else { fallback(); }
+  }
+  document.getElementById("copy-brief").addEventListener("click", function () { copyRequest("要点だけ"); });
+  document.getElementById("copy-full").addEventListener("click", function () { copyRequest("節ごとに詳しく"); });
+  document.getElementById("sheet-close").addEventListener("click", closeSheet);
+  sheet.addEventListener("click", function (e) { if (e.target === sheet) closeSheet(); });
+
   document.getElementById("prev").addEventListener("click", function () { go(-1); });
   document.getElementById("next").addEventListener("click", function () { go(1); });
   Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) {
@@ -340,6 +435,7 @@ a { color: var(--accent); }
     });
   });
   document.addEventListener("keydown", function (e) {
+    if (!sheet.hidden) { if (e.key === "Escape") closeSheet(); return; }
     if (e.key === "ArrowRight") go(1); else if (e.key === "ArrowLeft") go(-1);
   });
   var sx = null, sy = null;
