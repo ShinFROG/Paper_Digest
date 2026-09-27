@@ -357,6 +357,7 @@ a { color: var(--accent); }
         card.appendChild(dbasis);
       }
       card.appendChild(el("p", "summary", it.summary));
+      if (it.venue === "e-Stat") card.appendChild(el("p", "meta", "このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。"));
     } else {
       card.appendChild(el("p", "empty", "この論文の解説はまだありません。"));
     }
