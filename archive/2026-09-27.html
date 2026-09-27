@@ -384,7 +384,8 @@ a { color: var(--accent); }
       askrow.appendChild(more);
     }
     if (it.kind !== "data") { card.appendChild(askrow); card.appendChild(askStatus); }
-    var venue = (it.venue || "") + (it.sjr ? "（SJR " + it.sjr + "）" : "");
+    var metrics = [it.sjr ? "SJR " + it.sjr : "", it.citescore ? "CiteScore " + it.citescore + (it.citescore_year ? "（" + it.citescore_year + "）" : "") : ""].filter(Boolean).join("・");
+    var venue = (it.venue || "") + (metrics ? "（" + metrics + "）" : "");
     card.appendChild(el("p", "meta", [it.authors, venue, it.date].filter(Boolean).join("｜") + (it.fromDate ? "｜" + it.fromDate + " のレポート" : "")));
     if (state.view === views[0] && state.index === 0 && REPORT.intro) card.appendChild(el("p", "intro", REPORT.intro));
     stage.appendChild(card);
@@ -483,7 +484,7 @@ a { color: var(--accent); }
     if (marks[it.url]) { delete marks[it.url]; }
     else {
       marks[it.url] = { headline: it.headline, title: it.title, url: it.url, summary: it.summary, why: it.why, explain: it.explain,
-        theme: it.theme, field: it.field, kind: it.kind, venue: it.venue, sjr: it.sjr, authors: it.authors, date: it.date,
+        theme: it.theme, field: it.field, kind: it.kind, venue: it.venue, sjr: it.sjr, citescore: it.citescore, citescore_year: it.citescore_year, authors: it.authors, date: it.date,
         fromDate: it.fromDate || REPORT.date, markedAt: new Date().toISOString() };
     }
     store.set("pd-marks-v1", marks);
