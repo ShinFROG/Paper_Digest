@@ -102,6 +102,7 @@ a { color: var(--accent); }
 .ex h2 { margin: 0; font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 0.04em; }
 .ex p { margin: 0; font-size: 17px; line-height: 1.75; }
 .ex.first p { font-size: 18px; font-weight: 600; }
+.ex.fun { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; margin: 10px 0; }
 .unverified { margin: 0; font-size: 14px; line-height: 1.6; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
 .orig { margin: 0; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
 .meta { margin: 0; font-size: 13px; color: var(--muted); }
@@ -348,6 +349,12 @@ a { color: var(--accent); }
         sec.appendChild(el("p", null, ex[l[0]]));
         card.appendChild(sec);
       });
+      if (ex.fun) {
+        var fun = el("section", "ex fun");
+        fun.appendChild(el("h2", null, "面白いポイント"));
+        fun.appendChild(el("p", null, ex.fun));
+        card.appendChild(fun);
+      }
       if (ex.unverified) card.appendChild(labelled("unverified", "確認できなかった点", ex.unverified));
     } else if (it.summary) {
       if (it.kind === "data") {
