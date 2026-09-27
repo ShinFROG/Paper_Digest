@@ -212,8 +212,8 @@ a { color: var(--accent); }
   // two sources (preprints, journals), each with papers related to the owner's research and important papers;
   // the last two groups are the layout of the reports of 2026-09-26
   var GROUPS = [
-    { key: "pre", label: "プレプリント", parts: [["pre_related", "関連", "プレプリント：研究に関連する論文"], ["pre_notable", "重要", "プレプリント：分野を問わない重要論文"]] },
-    { key: "jnl", label: "論文誌", parts: [["jnl_related", "関連", "論文誌：研究に関連する論文"], ["jnl_notable", "重要", "論文誌：分野を問わない重要論文"]] },
+    { key: "pre", label: "プレプリント", parts: [["pre_related", "関連", "プレプリント：研究に関連する論文"], ["pre_notable", "注目", "プレプリント：注目分野の最先端"]] },
+    { key: "jnl", label: "論文誌", parts: [["jnl_related", "関連", "論文誌：研究に関連する論文"], ["jnl_notable", "注目", "論文誌：注目分野の最先端"]] },
     { key: "data", label: "データ", parts: [["data_related", "関連", "オープンデータ：研究に関連する新着データセット"]] },
     { key: "latest", label: "最新", parts: [["related", "関連", "最新：研究に関連する論文"], ["notable", "重要", "最新：分野を問わない重要論文"]] },
     { key: "topj", label: "Top誌", parts: [["top", "関連", "Top誌（SJR上位10%）：研究に関連する論文"], ["top_notable", "重要", "Top誌（SJR上位10%）：分野を問わない重要論文"]] }
@@ -337,7 +337,7 @@ a { color: var(--accent); }
     var ex = it.explain;
     if (ex) {
       var basis = el("p", "basis");
-      basis.appendChild(el("span", "pill", BASIS_PILL[ex.basis] || ex.basis || ""));
+      basis.appendChild(el("span", "pill", (ex.short ? "短い解説・" : "") + (BASIS_PILL[ex.basis] || ex.basis || "")));
       if (ex.preprint) basis.appendChild(el("span", "badge", "未査読プレプリント"));
       if (ex.basis_note) basis.appendChild(el("span", null, ex.basis_note));
       card.appendChild(basis);
@@ -395,7 +395,7 @@ a { color: var(--accent); }
         row.appendChild(el("span", "n", String(i + 1)));
         var box = el("span");
         box.appendChild(el("div", "h", (marks[it.url] ? "★ " : "") + (it.headline || it.title)));
-        var basis = it.explain ? (it.explain.basis === "本文" ? "本文" : it.explain.basis === "抄録" ? "抄録" : "題名のみ") : (it.kind === "data" ? "データ" : "");
+        var basis = it.explain ? ((it.explain.short ? "短い・" : "") + (it.explain.basis === "本文" ? "本文" : it.explain.basis === "抄録" ? "抄録" : "題名のみ")) : (it.kind === "data" ? "データ" : "");
         box.appendChild(el("div", "s", [it.theme || it.field, it.venue, basis, it.explain && it.explain.preprint ? "未査読" : ""].filter(Boolean).join("｜")));
         row.appendChild(box);
         row.addEventListener("click", function () { select(p[0]); state.index = i; render(); window.scrollTo(0, 0); });
