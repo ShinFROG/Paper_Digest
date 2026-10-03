@@ -501,37 +501,33 @@ a { color: var(--accent); }
     if (state.view === "marks") render(); else updateControls();
   });
 
-  // request for a longer explanation, following the owner's paper-review rules
+  // request for a longer explanation, written to be pasted into an AI chat app on a phone (Claude, ChatGPT, Gemini):
+  // self-contained, with no skills, local files or PC tools; it follows the owner's paper-review rules
   var REQUEST = [
     "次の論文を、私向けにわかりやすく解説してください。",
     "",
     "- 論文：{paper}",
-    "- 読者：私",
+    "- 読者：私（研究者。この論文の分野の専門家とは限らない）",
     "- 詳しさ：{depth}",
-    "- 成果物：会話での解説のみ。ファイルは作らない。",
     "",
     "進め方",
-    "- 研究用ドライブを読める環境なら、最初に skill「shin-paper-explain」を使う（Claude Code は /shin-paper-explain、Codex は $shin-paper-explain。見つからなければ agent-config の skills/shin-paper-explain/SKILL.md を読む）。読めない環境では、以下の手順だけで進める。",
-    "- 論文ファイルが手元になければ、対象案件の文献フォルダ（研究案件は B_research の INDEX.md から探す）、DOI・出版社の一次資料の順に探す。",
-    "- サブエージェントは使わない。",
+    "- 上のリンクを開いて原文を読む。無料で読めるPDFや別の版（arXiv・著者版など）があれば、それも使う。",
+    "- 本文が読めず、抄録や紹介文しか読めないときは、そのことを最初に書き、読めた範囲だけで解説する。読めていない部分を推測で埋めない。",
     "",
-    "手順",
-    "1. 原文を読んでから書く。本文・図表・付録まで確かめる。概要しか読めないときは、その範囲の解説だと最初に書く。",
-    "2. 次の順で説明する。",
-    "   (1) 一言で：この論文で何ができるようになったか（題名の言い換えにしない）",
-    "   (2) 問い：何が課題で、従来の方法のどこが足りないか",
-    "   (3) 手法：入力・出力と、なぜそれで解けるかの直観。核の式は意味を言葉で添え、具体例を一つ通す",
-    "   (4) 検証：データ・比較対象・評価指標。何をもって良いとするかを結果より先に示す",
-    "   (5) 結果：主要な図表の読み方（軸、どこを見るか、何が言えるか）と数値",
-    "   (6) 限界：著者が認める限界と、残る疑問。私の研究への示唆は、求めたときだけ加える",
-    "3. 数値・主張には節・図・式・ページを添える。論文の主張、解説として補った背景、あなたの解釈を区別する。",
-    "4. 数値を孫引きしない。未査読のプレプリントはその旨を書く。専門用語は初出で定義し、英語の原語を併記する。比喩で正確さを落とさない。",
-    "5. 答える前に、書いた数値・図表番号・主張を原文と照合する。照合できなかった箇所は推測で埋めず「未確認」と書く。",
+    "説明の順序",
+    "(1) 一言で：この論文で何ができるようになったか（題名の言い換えにしない）",
+    "(2) 問い：何が課題で、従来の方法のどこが足りないか",
+    "(3) 手法：入力・出力と、なぜそれで解けるかの直観。核の式は意味を言葉で添え、具体例を一つ通す",
+    "(4) 検証：データ・比較対象・評価指標。何をもって良いとするかを結果より先に示す",
+    "(5) 結果：主要な図表の読み方（軸、どこを見るか、何が言えるか）と数値",
+    "(6) 限界：著者が認める限界と、残る疑問（私の研究への示唆は、聞いたときだけ書く）",
     "",
-    "出力",
-    "- (1)〜(6) を見出しにして日本語で書く。「要点だけ」のときは (1) と主要な数点に絞る。",
-    "- 最後に「確認できなかった点」を1〜3行で書く（なければ「なし」）。",
-    "- 解説教科書や論文紹介スライドを作る依頼に変わったら、SKILL.md の表にある正本（例：研究論文解説の paper_guides）に従い、この会話用の手順は使わない。"
+    "書き方",
+    "- 数値・主張には節・図・表・ページを添える（例：「（§4.2、図5）」）。論文の主張、補った背景、あなたの解釈を区別する。",
+    "- 数値を孫引きしない。未査読のプレプリントならその旨を書く。専門用語は初出で短く定義し、英語の原語を添える。比喩で正確さを落とさない。",
+    "- 答える前に、書いた数値・図表番号・主張を原文と照らし合わせる。確かめられなかった箇所は「未確認」と書く。",
+    "- スマホで読むので、表や長い数式は使わず、(1)〜(6)の見出しと短い段落で、日本語のチャットの文章として書く（ファイルは作らない）。「要点だけ」のときは (1) と主要な数点に絞る。",
+    "- 最後に「確認できなかった点」を1〜3行で書く（なければ「なし」）。"
   ].join("\n");
   function requestText(it, depth) {
     return REQUEST.replace("{paper}", it.title + "（" + it.url + "）").replace("{depth}", depth);
@@ -553,8 +549,8 @@ a { color: var(--accent); }
   [].forEach.call(document.querySelectorAll("#sheet .share"), function (b) { b.hidden = !CAN_SHARE; });
   document.getElementById("copy-full").className = CAN_SHARE ? "btn" : "btn primary";
   document.getElementById("sheet-note").textContent = CAN_SHARE
-    ? "共有メニューで、Claude・ChatGPT・Gemini など使いたいAIアプリを選ぶと、依頼文が渡ります。Claude Code や Codex で頼むときは、依頼文をコピーして貼り付けます。"
-    : "依頼文をコピーして、Claude Code・Codex やAIのチャットに貼り付けます。";
+    ? "共有メニューで、Claude・ChatGPT・Gemini など使いたいAIアプリを選ぶと、依頼文が渡ります。渡らないアプリでは、依頼文をコピーしてチャットに貼り付けます。"
+    : "依頼文をコピーして、AIのチャットに貼り付けます。";
   function openSheet(it) {
     sheetItem = it;
     document.getElementById("sheet-paper").textContent = it.headline || it.title;
@@ -572,7 +568,7 @@ a { color: var(--accent); }
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () {
-        sheetStatus.textContent = "コピーしました（" + depth + "）。AIのチャットや Claude Code・Codex に貼り付けてください。";
+        sheetStatus.textContent = "コピーしました（" + depth + "）。AIアプリのチャットに貼り付けてください。";
       }, fallback);
     } else { fallback(); }
   }
