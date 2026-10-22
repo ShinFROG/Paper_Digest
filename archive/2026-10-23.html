@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="今日の論文">
+<meta name="theme-color" content="#0f1216" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3f4f1" media="(prefers-color-scheme: light)">
+<title>Paper Digest｜今日の論文</title>
+<style>
+:root {
+  --bg: #f3f4f1;
+  --surface: #ffffff;
+  --ink: #15181d;
+  --muted: #5b6470;
+  --line: #dde1e5;
+  --accent: #0f6e6e;
+  --accent-ink: #ffffff;
+  --accent-soft: #dcefed;
+  --star: #b7791f;
+  --warn: #8a5a00; --warn-soft: #fbf1dc; --warn-line: #e5c98f;
+  --t1: #dcebf7; --t2: #e3f1e1; --t3: #f6e8dc; --t4: #efe3f3; --t5: #e2eef0; --t6: #f3efd9; --t7: #ece7e3; --t8: #e0e6f4;
+  --font: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0f1216;
+    --surface: #171b21;
+    --ink: #eceff3;
+    --muted: #9aa3ae;
+    --line: #2a313a;
+    --accent: #4fc3b8;
+    --accent-ink: #0f1216;
+    --accent-soft: #1b3533;
+    --star: #f0b54a;
+    --warn: #f0b54a; --warn-soft: #3a2e14; --warn-line: #6b5420;
+    --t1: #1e2c3a; --t2: #1f3121; --t3: #3a2a1d; --t4: #30223a; --t5: #1d3134; --t6: #353018; --t7: #2e2925; --t8: #232a3c;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+button, select { font: inherit; color: inherit; }
+a { color: var(--accent); }
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 0;
+}
+/* header */
+.top { display: grid; gap: 10px; padding-bottom: 10px; }
+.toprow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.brand { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
+.brand small { font-weight: 400; color: var(--muted); margin-left: 6px; }
+.datesel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 8px 10px; font-size: 15px; max-width: 58vw;
+}
+.tabs { display: flex; gap: 3px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface);
+  border-radius: 999px; padding: 8px 7px; font-size: 13px; font-weight: 600;
+}
+.tab[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.tab.subtab { padding: 6px 14px; font-size: 13px; }
+.tab.subtab[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+/* card */
+.stage { display: flex; flex-direction: column; min-height: 0; }
+.card {
+  flex: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+  padding: 20px 18px 22px; display: flex; flex-direction: column; gap: 14px;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.cardhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pos { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.chip { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--t1); }
+.headline { margin: 0; font-size: 26px; line-height: 1.35; font-weight: 800; letter-spacing: 0.01em; text-wrap: balance; }
+.label { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 2px; letter-spacing: 0.04em; }
+.summary, .reason { margin: 0; font-size: 18px; line-height: 1.7; }
+.reason { font-size: 17px; }
+.basis { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.6; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.badge, .pill {
+  font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap;
+  color: var(--warn); background: var(--warn-soft); border: 1px solid var(--warn-line);
+}
+.pill { color: var(--muted); background: var(--bg); border-color: var(--line); }
+.ex { display: grid; gap: 2px; }
+.ex h2 { margin: 0; font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 0.04em; }
+.ex p { margin: 0; font-size: 17px; line-height: 1.75; }
+.ex.first p { font-size: 18px; font-weight: 600; }
+.ex.fun { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; margin: 10px 0; }
+.unverified { margin: 0; font-size: 14px; line-height: 1.6; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+.orig { margin: 0; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.meta { margin: 0; font-size: 13px; color: var(--muted); }
+.empty { color: var(--muted); font-size: 16px; line-height: 1.7; }
+/* list */
+.list { flex: 1; overflow-y: auto; display: grid; gap: 8px; align-content: start; padding-bottom: 8px; }
+.list > .label { margin-top: 6px; }
+.row {
+  display: grid; grid-template-columns: 2.2em 1fr; gap: 8px; align-items: start; text-align: left;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+}
+.row .n { font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+.row .h { font-weight: 700; font-size: 16px; line-height: 1.45; }
+.row .s { font-size: 13px; color: var(--muted); margin-top: 2px; }
+/* controls */
+.controls {
+  position: sticky; bottom: 0; background: var(--bg);
+  padding: 10px 0 calc(env(safe-area-inset-bottom, 0px) + 10px);
+  display: grid; grid-template-columns: 1fr auto auto auto 1fr; gap: 8px; align-items: center;
+}
+.btn {
+  min-height: 56px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface);
+  font-size: 17px; font-weight: 700; padding: 0 14px;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.icon { width: 56px; padding: 0; font-size: 22px; }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.btn.star[aria-pressed="true"] { color: var(--star); border-color: var(--star); }
+.btn:disabled { opacity: 0.35; }
+.intro { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.askrow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ask {
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 12px;
+  min-height: 52px; padding: 8px 6px; font-size: 14px; font-weight: 700; line-height: 1.35;
+  word-break: keep-all; overflow-wrap: anywhere;
+}
+.ask.sharemenu { align-self: flex-start; min-height: 0; padding: 10px 14px; }
+.askstatus { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.askstatus:empty { display: none; }
+.copybox {
+  width: 100%; margin: 8px 0 0; padding: 10px; font: inherit; font-size: 13px; line-height: 1.6;
+  color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+}
+@media (min-width: 700px) { .headline { font-size: 30px; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="toprow">
+      <div class="brand">Paper Digest<small id="daylabel"></small></div>
+      <select id="datesel" class="datesel" aria-label="日付を選ぶ"></select>
+    </div>
+    <div class="tabs" id="tabs" role="group" aria-label="表示の切り替え"></div>
+    <div class="tabs" id="subtabs" role="group" aria-label="関連と注目の切り替え" hidden></div>
+  </header>
+
+  <main class="stage" id="stage"></main>
+
+  <footer class="controls" id="controls">
+    <button class="btn" id="prev" type="button" aria-label="前の論文">← 前</button>
+    <button class="btn icon" id="speak" type="button" aria-label="読み上げ">🔊</button>
+    <button class="btn icon star" id="mark" type="button" aria-label="あとで読むに追加">☆</button>
+    <button class="btn icon" id="auto" type="button" aria-label="連続で読み上げ" aria-pressed="false">⏯</button>
+    <button class="btn primary" id="next" type="button" aria-label="次の論文">次 →</button>
+  </footer>
+</div>
+
+<script id="report-data" type="application/json">{"date": "2026-10-23", "intro": "プレプリントの新着1,149件（関連候補265件）、上位10%誌の新着2,383件とその他の学術誌のテーマに合う新着349件（このうち候補450件）、重要論文の候補352件（プレプリント261件・学術誌91件）、新着の公開データ106件から選びました。プレプリント・関連49報、プレプリント・注目50報、論文誌・関連50報、論文誌・注目46報、オープンデータ22件です。プレプリント・関連は関連の強い候補が限られたため49報、論文誌・注目は重点分野の主要誌の新着が少なかったため46報にとどめました。取得できなかった情報源はありません。", "pre_related": [{"id": "pr01", "rank": 1, "headline": "LLM社会シミュは実装の小差で結論が変わる", "title": "The Butterfly Effect in LLM Social Simulations: From Architecture Sensitivity to Robustness Audits", "url": "https://arxiv.org/abs/2610.28981", "authors": "Jinyi Ye ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "apa": "Ye, J., Cao, L., Chen, D., & Ferrara, E. (2026). The Butterfly Effect in LLM Social Simulations: From Architecture Sensitivity to Robustness Audits (Version 1). arXiv. https://doi.org/10.48550/ARXIV.2610.28981", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr02", "rank": 2, "headline": "代理モデルの分解で橋のベイズ同定を高速化", "title": "Scalable Bayesian Structural Health Monitoring via surrogate-based model-class decomposition", "url": "https://doi.org/10.2139/ssrn.7650592", "authors": "Laura Ierimonti ほか", "venue": "SSRN", "date": "2026-10-21", "apa": "Ierimonti, L., Tomassini, E., García-Macías, E., & Ubertini, F. (2026). Scalable Bayesian Structural Health Monitoring via surrogate-based model-class decomposition. https://doi.org/10.2139/ssrn.7650592", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "pr03", "rank": 3, "headline": "SEC半期報告案への21万件の意見をLLMで分類", "title": "Who Speaks for Quarterly Reporting? Evidence from More Than 215,000 Public Comments on the SEC's Semiannual Reporting Proposal", "url": "https://doi.org/10.2139/ssrn.7653278", "authors": "Victor Xiaoqi Wang ほか", "venue": "SSRN", "date": "2026-10-22", "apa": "Wang, V. X., & Yu, X. (2026). Who Speaks for Quarterly Reporting? Evidence from More Than 215,000 Public Comments on the SEC’s Semiannual Reporting Proposal. https://doi.org/10.2139/ssrn.7653278", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr04", "rank": 4, "headline": "空き地の緑化で固定資産税の滞納が減るか", "title": "Beyond Property Values: Vacant Lot Greening and Property Tax Delinquency", "url": "https://doi.org/10.2139/ssrn.7647038", "authors": "Desen Lin", "venue": "SSRN", "date": "2026-10-22", "apa": "Lin, D. (2026). Beyond Property Values: Vacant Lot Greening and Property Tax Delinquency. https://doi.org/10.2139/ssrn.7647038", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "pr05", "rank": 5, "headline": "リスク開示の中身で監査報酬の予測が改善", "title": "Narrative Risk Disclosures and Audit Pricing", "url": "https://doi.org/10.2139/ssrn.7652418", "authors": "Ehsan Heshmatzadeh ほか", "venue": "SSRN", "date": "2026-10-22", "apa": "Heshmatzadeh, E., & Parker, C. (. (2026). Narrative Risk Disclosures and Audit Pricing. https://doi.org/10.2139/ssrn.7652418", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr06", "rank": 6, "headline": "固定側の振動伝達率でタービン羽根の損傷を検知", "title": "Transmissibility-based detection of hydro-turbine runner damage from stationary-frame vibration", "url": "https://doi.org/10.2139/ssrn.7650594", "authors": "Jiannan Zhao ほか", "venue": "SSRN", "date": "2026-10-21", "apa": "Zhao, J., Duan, J., Peng, Z., Zhang, X., & Feng, J. (2026). Transmissibility-based detection of hydro-turbine runner damage from stationary-frame vibration. https://doi.org/10.2139/ssrn.7650594", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "pr07", "rank": 7, "headline": "LLMエージェントの戦略差とペルソナ指示の効き目", "title": "AgentMonopoly: Behavioral Patterns and Persona Control in LLM Agents", "url": "https://arxiv.org/abs/2610.29330", "authors": "Changshun Wu ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "apa": "Wu, C., Li, M., Marsault, M., Huang, X., & Cheng, C.-H. (2026). AgentMonopoly: Behavioral Patterns and Persona Control in LLM Agents (Version 1). arXiv. https://doi.org/10.48550/ARXIV.2610.29330", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr08", "rank": 8, "headline": "LLMで符号化したAI開示指標を人手で再検証", "title": "Independent Human Validation of Two Machine-Coded AI Disclosure Measures in U.S. Bank Annual Reports (FY2021–FY2025)", "url": "https://doi.org/10.17605/osf.io/6h89x", "authors": "Werner Girth ほか", "venue": "OSF Preprints (OSF Preprints)", "date": "2026-10-15", "apa": "Werner Girth, & Samuel Przeworski. (2026). Independent Human Validation of Two Machine-Coded AI Disclosure Measures in U.S. Bank Annual Reports (FY2021–FY2025). OSF Registries. https://doi.org/10.17605/OSF.IO/6H89X", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr09", "rank": 9, "headline": "LLM埋め込みで顧客の意味的表現を学習", "title": "Semantic Customer Embeddings", "url": "https://doi.org/10.2139/ssrn.7651000", "authors": "Isamar Troncoso ほか", "venue": "SSRN", "date": "2026-10-22", "apa": "Troncoso, I., Ma, L., Ascarza, E., & Israeli, A. (2026). Semantic Customer Embeddings. https://doi.org/10.2139/ssrn.7651000", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "pr10", "rank": 10, "headline": "粒状体に埋めた板の引抜き抵抗と深さの関係", "title": "Influence of embedding depth on the pullout of a plate from a confined granular medium", "url": "https://arxiv.org/abs/2610.29016", "authors": "Dominik Krengel ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "apa": "Krengel, D., Chen, J., Nomura, S., & Takahashi, H. (2026). Influence of embedding depth on the pullout of a plate from a confined granular medium (Version 1). arXiv. https://doi.org/10.48550/ARXIV.2610.29016", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "pr11", "rank": 11, "headline": "LLM同士の議論で説得と意見変化を測る", "title": "To Manipulate or Not: Opinion Dynamics in LLM Interactions", "url": "https://arxiv.org/abs/2610.28875", "authors": "Mohammad Siahkamari ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "apa": "Siahkamari, M., Nguyen, P. D., & MacNeil, S. (2026). To Manipulate or Not: Opinion Dynamics in LLM Interactions (Version 1). arXiv. https://doi.org/10.48550/ARXIV.2610.28875", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr12", "rank": 12, "headline": "希少疾患の無償介護の時間と経済価値を推計", "title": "The Invisible Cost: Contemporary Economic Valuation of Unpaid Care in Epidermolysis Bullosa Across Six European Countries", "url": "https://doi.org/10.21203/rs.3.rs-11256474/v1", "authors": "Christine Bodemer ほか", "venue": "Research Square (In Review)", "date": "2026-10-22", "apa": "Bodemer, C., Jain, R., Alonso-Ferreira, V., El-Hachem, M., Has, C., Hölgyesi, Á., Hubl, V., Iskrov, G., Medvecz, M., Salamon, G., Yordanova, I., Pellegrini, M., Taieb, C., Champeix, C., & Linertová, R. (2026). The Invisible Cost: Contemporary Economic Valuation of Unpaid Care in Epidermolysis Bullosa Across Six European Countries. https://doi.org/10.21203/rs.3.rs-11256474/v1", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "pr13", "rank": 13, "headline": "監査自動化の時間削減は誰の得になったか", "title": "Who Captures the Gains from Audit Automation? Evidence from Disclosed Audit Hours and Fees", "url": "https://doi.org/10.2139/ssrn.7647101", "authors": "Byungchul Choi", "venue": "SSRN", "date": "2026-10-21", "apa": "Choi, B. (2026). Who Captures the Gains from Audit Automation? Evidence from Disclosed Audit Hours and Fees. https://doi.org/10.2139/ssrn.7647101", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr14", "rank": 14, "headline": "AIを設定した人の道徳性が信頼行動に波及", "title": "The Moral Character of Humans Behind AI Shapes Behavioral Trust in Large Language Models", "url": "https://doi.org/10.2139/ssrn.7656366", "authors": "Cassandra Grützner ほか", "venue": "SSRN", "date": "2026-10-22", "apa": "Grützner, C., & Niszczota, P. (2026). The Moral Character of Humans Behind AI Shapes Behavioral Trust in Large Language Models. https://doi.org/10.2139/ssrn.7656366", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr15", "rank": 15, "headline": "短い運動履歴から船体の動揺式をオンライン同定", "title": "Online Seakeeping Forecast Coupling System Identification With Nonlinear Pseudo Spectral Potential-Flow", "url": "https://arxiv.org/abs/2610.28694", "authors": "Zev Hoffman ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "apa": "Hoffman, Z., Vahaji, S., Candon, M., Jayarathne, N., & Marzocca, P. (2026). Online Seakeeping Forecast Coupling System Identification With Nonlinear Pseudo Spectral Potential-Flow (Version 1). arXiv. https://doi.org/10.48550/ARXIV.2610.28694", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "pr16", "rank": 16, "headline": "動的ハイパーグラフで中小企業の信用リスク評価", "title": "Multi-view Dynamic Hypergraph Neural Network based on Key Hyperedges: A New Perspective on Credit Risk Assessment for Small and Medium Enterprises", "url": "https://doi.org/10.2139/ssrn.7656053", "authors": "Bo Dong ほか", "venue": "SSRN", "date": "2026-10-22", "apa": "Dong, B., Huang, D., & Wang, X. (2026). Multi-view Dynamic Hypergraph Neural Network based on Key Hyperedges: A New Perspective on Credit Risk Assessment for Small and Medium Enterprises. https://doi.org/10.2139/ssrn.7656053", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr17", "rank": 17, "headline": "AI事故は証券開示にどこまで現れるか", "title": "The AI Incident Disclosure Shadow: Tracking AI Incidents into U.S. Securities Filings", "url": "https://doi.org/10.2139/ssrn.7648820", "authors": "Samir Chincholikar ほか", "venue": "SSRN", "date": "2026-10-22", "apa": "Chincholikar, S., & Chawla, R. (2026). The AI Incident Disclosure Shadow: Tracking AI Incidents into U.S. Securities Filings. https://doi.org/10.2139/ssrn.7648820", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr18", "rank": 18, "headline": "財務テキストの匿名化で失われる情報", "title": "Anonymization and Information Loss", "url": "https://doi.org/10.2139/ssrn.7653699", "authors": "Ke Wu ほか", "venue": "SSRN", "date": "2026-10-22", "apa": "Wu, K., Ying, Z., Yang, B., & Zhou, D. (2026). Anonymization and Information Loss. https://doi.org/10.2139/ssrn.7653699", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr19", "rank": 19, "headline": "訴えられた企業でアナリスト予想はどう変わるか", "title": "Being Sued, Not Suing: Litigation and the Analyst Information Environment", "url": "https://doi.org/10.2139/ssrn.7651778", "authors": "Karina Zhang ほか", "venue": "SSRN", "date": "2026-10-21", "apa": "Zhang, K., Cheng, Y., & Ndum, R. (2026). Being Sued, Not Suing: Litigation and the Analyst Information Environment. https://doi.org/10.2139/ssrn.7651778", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr20", "rank": 20, "headline": "支払異常の検知と運転資本判断を組み合わせる", "title": "PayGuard AI: An Explainable Hybrid Framework for Corporate Payment-Anomaly Detection and Working-Capital Decision Support", "url": "https://doi.org/10.21203/rs.3.rs-11144714/v1", "authors": "Tanisi Das", "venue": "Research Square (In Review)", "date": "2026-10-22", "apa": "Das, T. (2026). PayGuard AI: An Explainable Hybrid Framework for Corporate Payment-Anomaly Detection and Working-Capital Decision Support. https://doi.org/10.21203/rs.3.rs-11144714/v1", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr21", "rank": 21, "headline": "住宅ローン信用リスクのモデル間の不一致", "title": "Specification Disagreement and Forecast-Transfer Discrepancy in Mortgage Credit Risk: Evidence from Behavioural-History Models", "url": "https://doi.org/10.20944/preprints202610.2113.v1", "authors": "Dyke Mathale ほか", "venue": "Preprints.org", "date": "2026-10-22", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr22", "rank": 22, "headline": "AIワークフローの原価計算と予算承認", "title": "PALO FinOps: Evidence-Gated Cost Accounting and Budget Admission for Multi-Model AI Workflows", "url": "https://doi.org/10.2139/ssrn.7651479", "authors": "Fabrizio Degni", "venue": "SSRN", "date": "2026-10-22", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr23", "rank": 23, "headline": "孤独とブランド資産がAI購買の信頼に与える影響", "title": "Brand Equity Moderates the Effect of Loneliness on Trust and Purchase Intentions in Conversational AI", "url": "https://econpapers.repec.org/RePEc:gtr:gatrjs:jmmr369", "authors": "Kypros Zantis", "venue": "RePEc NEP", "date": "2026-10-19", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "pr24", "rank": 24, "headline": "買物エージェントにどこまで自動購入を任せるか", "title": "Preference Is Not Permission: Personalizing the Auto-Purchase Line in Agentic Commerce", "url": "https://arxiv.org/abs/2610.29216", "authors": "Ryotaro Shimizu ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "pr25", "rank": 25, "headline": "デジタル銀行の品質と忠誠を満足と信頼が媒介", "title": "Digital Banking Service Quality and Customer Loyalty: The Mediating Role of Customer Satisfaction and the Moderating Role of Customer Trust in Nigeria", "url": "https://doi.org/10.2139/ssrn.7649204", "authors": "Ganiyu Jimoh", "venue": "SSRN", "date": "2026-10-22", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "pr26", "rank": 26, "headline": "小売の品揃え判断を相対貢献利益で偏りなく", "title": "Selling Socks Is Not Buying Stocks&nbsp;De-Biasing Retail Assortment Decisions with Relative Contribution Margin (CMᵢ / Xᵢ)", "url": "https://doi.org/10.2139/ssrn.7644027", "authors": "Ansgar John Brenninkmeijer ほか", "venue": "SSRN", "date": "2026-10-22", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "pr27", "rank": 27, "headline": "施設の直接ケア職員が若者の行動をどう扱うか", "title": "Anticipated Caregiving Approaches Towards Youth Behavioral Presentations Among Direct Care Workers in Psychiatric Residential Treatment Facilities: An Experimental Vignette-Based Study", "url": "https://doi.org/10.2139/ssrn.7642358", "authors": "Philip Sternberg Lamb ほか", "venue": "SSRN", "date": "2026-10-21", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "pr28", "rank": 28, "headline": "SNSは民族間の所得格差を縮めるか", "title": "Can Social Media Reduce the Ethnic Income Gap in China? Evidence from the Chinese General Social Survey", "url": "https://doi.org/10.2139/ssrn.7656386", "authors": "Yunshu Shao", "venue": "SSRN", "date": "2026-10-22", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "pr29", "rank": 29, "headline": "スポーツを孤独への社会的処方とみる概念整理", "title": "Sport Is Social Medicine: A Conceptual Review of Loneliness and Social Health", "url": "https://doi.org/10.21203/rs.3.rs-11072500/v1", "authors": "Cengiz ARSLAN", "venue": "Research Square (In Review)", "date": "2026-10-22", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "pr30", "rank": 30, "headline": "ケニアの調達記録で欠ける情報の決定要因", "title": "What Public Buyers Leave Out: The Determinants of Disclosure Gaps in Kenya's Procurement Records", "url": "https://doi.org/10.6084/m9.figshare.34741482", "authors": "Hilary Ndambiri ほか", "venue": "Figshare", "date": "2026-10-21", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr31", "rank": 31, "headline": "英国の近隣単位の交通手段別アクセシビリティ", "title": "Neighbourhood-Level Multimodal Population Accessibility Measures for the United Kingdom", "url": "https://doi.org/10.2139/ssrn.7656339", "authors": "Nicholas Patrick Sweeney", "venue": "SSRN", "date": "2026-10-22", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "pr32", "rank": 32, "headline": "住宅バウチャーの期限内の住宅確保をモデル化", "title": "The Voucher Clock Is Ticking: Deadline-Constrained Housing Realization Under Recursive Administrative Exposure", "url": "https://doi.org/10.2139/ssrn.7645238", "authors": "Mahana Barbadillo", "venue": "SSRN", "date": "2026-10-21", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "pr33", "rank": 33, "headline": "AI導入の語りと実態のずれを規制は抑えるか", "title": "Can Regulation Curb AI Adoption Narrative–Practice Decoupling?An Agent-Based Model of the A-Share Market", "url": "https://doi.org/10.21203/rs.3.rs-11410728/v1", "authors": "ming sun", "venue": "Research Square (In Review)", "date": "2026-10-22", "theme": "職場AI・組織行動", "theme_no": 7}, {"id": "pr34", "rank": 34, "headline": "仕事の成果・満足がSNSでの自己開示を左右", "title": "Unlocking Online Self-Disclosure: The Roles of Work Performance, Job Satisfaction, and Social Capital", "url": "https://doi.org/10.2139/ssrn.7656365", "authors": "Prajakta Kolte ほか", "venue": "SSRN", "date": "2026-10-22", "theme": "職場AI・組織行動", "theme_no": 7}, {"id": "pr35", "rank": 35, "headline": "共有作業空間が複数LLMレビューの独立性を損なう", "title": "Contaminated by Collaboration: Shared Workspaces Can Fabricate Severe-Defect Recall in Multi-Agent Code Review", "url": "https://doi.org/10.6084/m9.figshare.34747932", "authors": "Jiahao Hu", "venue": "Figshare", "date": "2026-10-22", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr36", "rank": 36, "headline": "複数エージェントの構成を貢献度で探索", "title": "Credit Where Credit Is Due: Contrastive Attribution Topology Search for Multi-Agent Systems", "url": "https://arxiv.org/abs/2610.29292", "authors": "Fabian Tritthart ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr37", "rank": 37, "headline": "競技ディベートで戦略を学ぶ協調エージェント", "title": "SynerMind: Cognitive Synergic Agents for Adaptive Strategy Learning in Competitive Debate", "url": "https://doi.org/10.2139/ssrn.7656180", "authors": "Mengqi Chen ほか", "venue": "SSRN", "date": "2026-10-22", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr38", "rank": 38, "headline": "LLMの感情表出は実在か架空かの枠付けで変わる", "title": "Affective Readout Depends on Real-versus-Fictional Referent Framing in Large Language Models: A Referent-Controlled Evaluation", "url": "https://doi.org/10.2139/ssrn.7649338", "authors": "Keito Inoshita", "venue": "SSRN", "date": "2026-10-21", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr39", "rank": 39, "headline": "LLMエージェント失敗の早期警告の比較", "title": "Cohort Divergence Does Not Consistently Outperform Single-Rollout Judging for Early Warning of LLM Agent Failure", "url": "https://doi.org/10.20944/preprints202610.2173.v1", "authors": "Ejiga Peter Ojonugwa Oluwafemi ほか", "venue": "Preprints.org", "date": "2026-10-22", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr40", "rank": 40, "headline": "マクロ経済の多主体強化学習を数秒で", "title": "JaxMARL-BC: Multi-Agent Reinforcement Learning for Macroeconomic Modelling, in Seconds", "url": "https://arxiv.org/abs/2610.28907", "authors": "Daniele Montagnani ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "pr41", "rank": 41, "headline": "多粒径の土砂輸送と分級の計算と実験", "title": "Computational and experimental study of multi-grain-size sediment transport and sorting process", "url": "https://arxiv.org/abs/2610.29072", "authors": "Mehrshad Gholami Anjiraki ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "pr42", "rank": 42, "headline": "岩盤亀裂の交差部の局所損失を格子ボルツマンで", "title": "Three dimensional momentum redistribution and local hydraulic loss at rock fracture intersections based on Lattice Boltzmann method", "url": "https://doi.org/10.2139/ssrn.7656292", "authors": "Jiacheng Ma ほか", "venue": "SSRN", "date": "2026-10-22", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "pr43", "rank": 43, "headline": "物理情報付き極限学習機の拘束条件の扱い", "title": "From Soft to Hard Constraints in Physics-Informed Extreme Learning Machines: Analysis and Algorithms", "url": "https://doi.org/10.21203/rs.3.rs-11169466/v1", "authors": "Ruonan Zhai ほか", "venue": "Research Square (In Review)", "date": "2026-10-22", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "pr44", "rank": 44, "headline": "熱・多孔質弾性の分離型並列解法", "title": "Parameters Robust Parallelizable Iterative Decoupled Algorithms for Thermo-Poroelasticity with Nonlinear Convective Transport", "url": "https://arxiv.org/abs/2610.29668", "authors": "Ziliang Li ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "pr45", "rank": 45, "headline": "気候変動と森林管理が落石防護に与える影響", "title": "Modelling the Long-Term Effects of Climate Change and Silvicultural Systems on Rockfall Protection: A Case Study from the Slovenian Alps", "url": "https://doi.org/10.21203/rs.3.rs-11202013/v1", "authors": "Tine Ferk ほか", "venue": "Research Square (In Review)", "date": "2026-10-22", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "pr46", "rank": 46, "headline": "多孔質流れの鞍点系での量子的な不確実性評価", "title": "Coefficient-free Block Encodings of Saddle-point Flow: Coherent Uncertainty Quantification at Uniform Depth and the Quantum Crossover", "url": "https://doi.org/10.2139/ssrn.7650679", "authors": "Muhammad Javed Bukhari", "venue": "SSRN", "date": "2026-10-22", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "pr47", "rank": 47, "headline": "構造部材の予知保全のためのAIデジタルツイン", "title": "AI-Driven Digital Twin for Real-Time Predictive Maintenance of Structural Components", "url": "https://doi.org/10.20944/preprints202610.2128.v1", "authors": "Andrei Radu Muresan ほか", "venue": "Preprints.org", "date": "2026-10-22", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "pr48", "rank": 48, "headline": "監査の質がESG開示の信頼性を高めるか", "title": "External Audit Quality, Corporate Governance and ESG Disclosure Credibility: Moderating Evidence from Listed Firms in Sub-Saharan Africa", "url": "https://doi.org/10.21203/rs.3.rs-11118896/v1", "authors": "abdul razak abdulai ほか", "venue": "Research Square (In Review)", "date": "2026-10-21", "theme": "会計情報科学", "theme_no": 2}, {"id": "pr49", "rank": 49, "headline": "標準化への参加とサプライチェーンの強靭性", "title": "Corporate participation in standard setting and supply chain resilience", "url": "https://doi.org/10.2139/ssrn.7656388", "authors": "Yao Deng ほか", "venue": "SSRN", "date": "2026-10-22", "theme": "会計情報科学", "theme_no": 2}], "pre_notable": [{"id": "pn01", "rank": 1, "field": "経済学", "headline": "合理的不注意の消費者の需要推定（RI-BLP）", "title": "Demand Estimation for Rationally Inattentive Consumers", "url": "https://arxiv.org/abs/2610.29600", "authors": "Ruolei Zhu", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "集計シェアからの需要推定の標準であるBLPに合理的不注意を組み込み、価格の内生性と嗜好の異質性を保ったまま推定できるようにした。"}, {"id": "pn02", "rank": 2, "field": "統計学", "headline": "コンジョイント実験の常時有効な推論", "title": "Anytime-Valid Inference in Conjoint Experiments", "url": "https://arxiv.org/abs/2610.28979", "authors": "Daniel Molitor ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "データが順次届くオンライン実験で、多数の推定対象ごとに目標精度に達した時点で止められる、いつでも有効な推論を示した。"}, {"id": "pn03", "rank": 3, "field": "因果推論", "headline": "差の差分析の共変量の共通因果性を検定する", "title": "Testing Common Causality of Covariates: Evidence from Private-Sector Ban-the-Box Policies", "url": "https://arxiv.org/abs/2610.29148", "authors": "Sunny R. Karim", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "差の差分析で共変量の係数が地域・時点で一定かを検定する方法を示し、雇用の犯歴欄廃止政策に適用した。"}, {"id": "pn04", "rank": 4, "field": "経営学", "headline": "自動配送の利用を促す割引の無作為化実験", "title": "Incentivizing Adoption of Autonomous Delivery: A Randomized Field Experiment", "url": "https://doi.org/10.2139/ssrn.7650978", "authors": "Shuai Hao ほか", "venue": "SSRN", "date": "2026-10-22", "why": "AIによる配送サービスの継続利用を、単段階・多段階の値引きでどう促せるかを大規模なフィールド実験で比べた。"}, {"id": "pn05", "rank": 5, "field": "経済学", "headline": "AIチャットは従来の検索に取って代わるか", "title": "Can AI Chat Replace Traditional Search? Evidence from a RAG-based Live Events Experiment", "url": "https://arxiv.org/abs/2610.28639", "authors": "Rakesh Allu ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "事前登録した実験で、フィルタ型検索と生成AIチャットなどを比べ、利用者の行動と検索結果への影響を測った。"}, {"id": "pn06", "rank": 6, "field": "組織行動・心理的安全性", "headline": "上下関係に敏感な懸念はAI対話でどこまで語られるか", "title": "Bounded Disclosure: How Employees Manage Hierarchy-sensitive&nbsp;Concerns in AI-mediated Organizational Listening", "url": "https://doi.org/10.2139/ssrn.7646500", "authors": "Michael Saatkamp", "venue": "SSRN", "date": "2026-10-22", "why": "パルス調査では見えない、上下関係に敏感な懸念が、AIを介した対話形式でどう開示・抑制されるかを分析した。"}, {"id": "pn07", "rank": 7, "field": "機械学習", "headline": "専門の異なるAI研究者チームで線形注意機構を探索", "title": "Building AI Research Teams for Autonomous Discovery of Linear Attention Architectures", "url": "https://arxiv.org/abs/2610.28887", "authors": "Yujian Liu ほか", "venue": "Hugging Face Daily Papers", "date": "2026-10-22", "why": "専門性の異なるエージェントでチームを組み、局所解を避けて新しい線形注意の構造を自律的に発見する方法を示した。"}, {"id": "pn08", "rank": 8, "field": "因果推論", "headline": "遡及的反実仮想による直接・間接効果", "title": "Backtracking Direct, Indirect and Total Effects", "url": "https://arxiv.org/abs/2610.28910", "authors": "Jose M. Pe\\~{n}a", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "世界をまたぐ介入的反実仮想ではなく、遡及的な反実仮想で直接・間接効果を定義し直す新しい媒介分析を示した。"}, {"id": "pn09", "rank": 9, "field": "統計学", "headline": "e値を準超マルチンゲールで結合する", "title": "Combining e-values using demi-supermartingales", "url": "https://arxiv.org/abs/2603.10329", "authors": "Jiahao Ming ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "e値の結合法を示して、ノンパラメトリックな平均検定の古い予想を解決した。"}, {"id": "pn10", "rank": 10, "field": "オペレーションズ・リサーチ", "headline": "選択肢を絞る確率的利用者均衡のリンク型解法", "title": "A Link-Based Algorithm for Stochastic User Equilibrium with Bounded Choice and Local Detour Threshold", "url": "https://arxiv.org/abs/2610.29151", "authors": "Takeshi Nagae", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "観測される経路選択に合わせて選択肢集合を制限する交通均衡モデルを、効率よく解くアルゴリズムを示した。"}, {"id": "pn11", "rank": 11, "field": "経済学", "headline": "調達のしきい値操作と選挙前の禁止期間", "title": "Discretion at the Margin: Threshold Manipulation and Electoral Bans in Colombian Public Procurement", "url": "https://arxiv.org/abs/2610.28965", "authors": "Cristian Espinal Maya ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "コロンビアの公共調達で、しきい値の下に見積額を操作する行動と、その費用を清浄な識別で測った。"}, {"id": "pn12", "rank": 12, "field": "機械学習", "headline": "対話型ストリーミング動画生成の統一評価", "title": "StreamEval: Evaluating Interactive Streaming Video Generation Models", "url": "https://arxiv.org/abs/2610.28402", "authors": "StreamEval Team", "venue": "Hugging Face Daily Papers", "date": "2026-10-22", "why": "アバター対話や世界生成など5課題・300ケースで、対話しながら生成する動画モデルを評価する基準を作った。"}, {"id": "pn13", "rank": 13, "field": "組織行動・心理的安全性", "headline": "ギグ基盤はチームでの受注を認めるべきか", "title": "When should Gig Platforms Allow Teams?", "url": "https://doi.org/10.2139/ssrn.7646258", "authors": "Wee Kiat Lee ほか", "venue": "SSRN", "date": "2026-10-22", "why": "指名した提供者以外が仕事に加わることの利点と責任の問題を、ギグ基盤の設計としてモデル化した。"}, {"id": "pn14", "rank": 14, "field": "人口学", "headline": "相続を受けると遺産動機は受け継がれるか", "title": "Inheritance Receipt and the Transmission of Bequest Motives", "url": "https://doi.org/10.31235/osf.io/sptke_v1", "authors": "Thelonious Lyle Goerz ほか", "venue": "SocArXiv", "date": "2026-10-22", "why": "高齢化で相続の時期が遅くなるなか、相続の受け取りが本人の遺産動機にどう影響するかを検証した。"}, {"id": "pn15", "rank": 15, "field": "因果推論", "headline": "処置群と対照群が1つずつの差の差分析の推論", "title": "Two-cluster Difference-in-Differences via Maximally Detectable Placebo Effect", "url": "https://doi.org/10.2139/ssrn.7645879", "authors": "Mark Louie Ramos", "venue": "SSRN", "date": "2026-10-22", "why": "クラスタが2つしかない差の差分析で、事前期間のプラセボ効果の分布から検出可能な最小効果を定める方法を示した。"}, {"id": "pn16", "rank": 16, "field": "経済学", "headline": "記憶を操作する説得", "title": "Memory Manipulation", "url": "https://arxiv.org/abs/2610.29847", "authors": "Benson Tsz Kin Leung", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "受け手が思い出す信号の確率を操作する説得をモデル化し、ベイズ的な受け手が補正しても操作が効く条件を示した。"}, {"id": "pn17", "rank": 17, "field": "経済学", "headline": "真実と欺瞞：言語の不完全さと嘘のコスト", "title": "Truth and Deception", "url": "https://arxiv.org/abs/2610.28783", "authors": "Jeremy Bertomeu ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "組織の言語が状態を不完全に表すとき、嘘のコストと欺瞞の相互作用を理論的に分析した。"}, {"id": "pn18", "rank": 18, "field": "経済学", "headline": "支配戦略メカニズムの収入保証の等価性", "title": "Revenue Guarantee Equivalence between Dominant-Strategy and Bayesian Mechanisms", "url": "https://arxiv.org/abs/2610.29208", "authors": "Nir Bachrach ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "価値分布の情報が限られるオークションで、単純な支配戦略メカニズムがベイズ型と同じ収入保証を持つことを示した。"}, {"id": "pn19", "rank": 19, "field": "経済学", "headline": "世界29か国50共同体の社会ネットワークデータ", "title": "A cross-cultural dataset on the structure of social networks: The ENDOW project", "url": "https://arxiv.org/abs/2610.28793", "authors": "Eleanor A. Power ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "漁村から都市まで多様な共同体の多層的な社会ネットワークを収集したデータを公開した。"}, {"id": "pn20", "rank": 20, "field": "経済学", "headline": "米国の先願主義への移行と特許競争", "title": "Filing Faster, Not Inventing More: The America Invents Act and Patent Races", "url": "https://doi.org/10.2139/ssrn.7639541", "authors": "Kirill Proskurin", "venue": "SSRN", "date": "2026-10-21", "why": "先発明主義から先願主義への移行で、企業が発明を増やしたのではなく出願を早めたことを示した。"}, {"id": "pn21", "rank": 21, "field": "経済学", "headline": "株式市場の反応は企業の有害物質削減を促すか", "title": "Do Equity Markets Spur Corporate Detox?", "url": "https://doi.org/10.2139/ssrn.7647798", "authors": "Ali Ataullah ほか", "venue": "SSRN", "date": "2026-10-21", "why": "発がん性物質の報告公表後の株価反応が、企業の環境行動を変えることを記録と実験で示した。"}, {"id": "pn22", "rank": 22, "field": "経営学", "headline": "新製品発表での経営者の感情が供給網に波及", "title": "Does Calm Speak Louder? Managerial Emotions and Valuation Spillovers Along Supply Chains", "url": "https://doi.org/10.2139/ssrn.7656037", "authors": "Can Xie ほか", "venue": "SSRN", "date": "2026-10-22", "why": "発表時の表情と声から感情を抽出し、関連企業の株価評価への波及を分析した。"}, {"id": "pn23", "rank": 23, "field": "経営学", "headline": "従業員の電子プライバシー法と企業の情報環境", "title": "Privacy Protection and Employee Disclosure: Evidence from Electronic Privacy Laws&nbsp;", "url": "https://doi.org/10.2139/ssrn.7654560", "authors": "Huasheng Gao ほか", "venue": "SSRN", "date": "2026-10-22", "why": "州ごとに段階導入された従業員の電子プライバシー法を使い、従業員による開示と企業の情報環境への影響を推定した。"}, {"id": "pn24", "rank": 24, "field": "経営学", "headline": "個別合意が新興企業の革新を促す", "title": "I-deals that spark innovation: The power of entrepreneurial orientation and entrepreneurs’ well-being in European start-ups", "url": "https://doi.org/10.2139/ssrn.7656418", "authors": "Irene Sanchez-Turón ほか", "venue": "SSRN", "date": "2026-10-22", "why": "欧州の新興企業で、働き方の個別合意と起業家の幸福感、企業家志向、革新の関係を分析した。"}, {"id": "pn25", "rank": 25, "field": "経営学", "headline": "民営化せずに国有株主を再編する改革", "title": "State Ownership without Privatization: Shareholder Reform and SOEs’ Dual Goals", "url": "https://doi.org/10.2139/ssrn.7656036", "authors": "Sujuan xie ほか", "venue": "SSRN", "date": "2026-10-22", "why": "中国の国有資本の株主再編が、国有企業の戦略的革新と会計上の成果の両立にどう効くかを分析した。"}, {"id": "pn26", "rank": 26, "field": "統計学", "headline": "ガウス混合のNPMLEはヘリンガー距離で最適", "title": "Minimax Optimality of the NPMLE for Gaussian Mixtures in Hellinger Distance", "url": "https://arxiv.org/abs/2610.30109", "authors": "Shayan Hundrieser ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "1次元ガウス混合密度の非パラメトリック最尤推定が、ヘリンガー距離でミニマックス最適であることを示した。"}, {"id": "pn27", "rank": 27, "field": "統計学", "headline": "退化U統計量の常時有効検定をブートストラップで", "title": "Boot-AVT: Asymptotically Anytime-Valid Testing with Degenerate U-Statistics via Bootstrap", "url": "https://arxiv.org/abs/2610.28931", "authors": "Jixuan Liu ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "帰無仮説の下で退化するU統計量に基づく検定を、いつでも止められる形で実行するブートストラップ法を示した。"}, {"id": "pn28", "rank": 28, "field": "統計学", "headline": "ワッサースタイン空間での主成分分析", "title": "Lifting PCA in the Wasserstein Space", "url": "https://arxiv.org/abs/2610.29679", "authors": "J\\'er\\'emie Bigot ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "分布そのものをデータとする場合の主成分分析を、最適輸送の枠組みで正準的に定義した。"}, {"id": "pn29", "rank": 29, "field": "統計学", "headline": "スタイン作用素による非正規化モデルの統一的推定", "title": "A unified approach for estimation of unnormalized models via Stein operators", "url": "https://arxiv.org/abs/2610.29510", "authors": "Mitsuki Nagai ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "適切なスコアリングルールとスタイン法を結びつけ、正規化定数のないモデルの推定を統一的に扱った。"}, {"id": "pn30", "rank": 30, "field": "統計学", "headline": "PDE逆問題の逐次エントロピー最適輸送", "title": "Sequential Entropic Optimal Transport for Bayesian Inverse Problems via Multilevel Monte Carlo", "url": "https://arxiv.org/abs/2610.29546", "authors": "Jason Beh ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "偏微分方程式に支配される逆問題のベイズ推定を、多段階モンテカルロと逐次的な最適輸送で効率化した。"}, {"id": "pn31", "rank": 31, "field": "統計学", "headline": "不完全な物理知識を使う回帰のミニマックス率", "title": "Minimax Rates for imperfect Physics-Informed Regression", "url": "https://arxiv.org/abs/2610.29532", "authors": "Nathan Doum\\`eche (LPSM)", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "目的関数が偏微分方程式を近似的にしか満たさないとき、物理情報がどれだけ推定を改善するかを率で示した。"}, {"id": "pn32", "rank": 32, "field": "機械学習", "headline": "視覚言語エージェントは3次元空間を探索・地図化できるか", "title": "SpatialScout: Can VLM Agents Actively Explore and Map 3D Scenes?", "url": "https://arxiv.org/abs/2610.26659", "authors": "Zhaoxi Zhang ほか", "venue": "Hugging Face Daily Papers", "date": "2026-10-22", "why": "エージェントが自ら視覚情報を取りに行き、3次元の表現にまとめる能力を測る基準を示した。"}, {"id": "pn33", "rank": 33, "field": "機械学習", "headline": "実環境から学ぶコンピュータ操作エージェントの環境合成", "title": "Agent World Model in the Wild: Computer-Use Agent Environment Synthesis", "url": "https://arxiv.org/abs/2610.26828", "authors": "Zhaoyang Wang ほか", "venue": "Hugging Face Daily Papers", "date": "2026-10-22", "why": "実際のコンピュータ環境を模した学習環境を自動合成し、エージェントの相互作用による学習を拡大した。"}, {"id": "pn34", "rank": 34, "field": "機械学習", "headline": "最先端エージェントは科学のML改善を自動化できるか", "title": "Automating ML for Science: Can Frontier Agents Climb Scientific Hills in the Wild?", "url": "https://arxiv.org/abs/2610.28763", "authors": "Ming Zhong ほか", "venue": "Hugging Face Daily Papers", "date": "2026-10-22", "why": "科学の機械学習モデルを改善する実課題で、コーディングエージェントが自動研究者として通用するかを評価した。"}, {"id": "pn35", "rank": 35, "field": "機械学習", "headline": "Muonの直交化はヘッセ行列の構造に適応する", "title": "How Does Orthogonalization Adapt to the Neural Network Hessian Structure? A Gradient Self Outer-Product Analysis at Initialization", "url": "https://arxiv.org/abs/2610.28975", "authors": "Shenyang Deng ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "AdamWを上回ることの多いMuon最適化が、なぜニューラルネットの曲率構造に合うのかを初期化時の解析で示した。"}, {"id": "pn36", "rank": 36, "field": "機械学習", "headline": "文脈内強化学習は事後サンプリングか", "title": "Is In-Context Reinforcement Learning A Posterior Sampler? An Empirical Study", "url": "https://arxiv.org/abs/2610.28977", "authors": "Weiqin Chen ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "大規模言語モデルの文脈内強化学習が事後サンプリングとして振る舞うかを実証的に検証した。"}, {"id": "pn37", "rank": 37, "field": "機械学習", "headline": "大規模な連続フロー言語モデル", "title": "Large Flow Language Models", "url": "https://arxiv.org/abs/2610.28559", "authors": "Arnav Chavan ほか", "venue": "Hugging Face Daily Papers", "date": "2026-10-21", "why": "並列生成ができる連続フローの言語モデルを数十億パラメータ規模で構築する技法を示した。"}, {"id": "pn38", "rank": 38, "field": "機械学習", "headline": "推論モデルは考えるほど「いくつか」を字義通りに読む", "title": "Entertain, then Cancel: How Thinking Makes Reasoning Models Read Some and Or Literally", "url": "https://arxiv.org/abs/2610.21204", "authors": "Zhizhuo Kou ほか", "venue": "Hugging Face Daily Papers", "date": "2026-10-22", "why": "思考時間を延ばすと、推論モデルが会話上の含意を取らず字義通りに解釈するようになることを示した。"}, {"id": "pn39", "rank": 39, "field": "機械学習", "headline": "人の動作から両手の器用な操作を追従制御", "title": "DONIC: Generalist Dexterous Bimanual Tracking Control from Human Demonstrations", "url": "https://arxiv.org/abs/2610.29997", "authors": "Mingze Sun ほか", "venue": "Hugging Face Daily Papers", "date": "2026-10-22", "why": "人のデモから多様な両手操作を追従する汎用的な制御を学ぶ方法を示した。"}, {"id": "pn40", "rank": 40, "field": "因果推論", "headline": "クラスタ化したオンライン実験の分位処置効果", "title": "CAQ: Clustered Asymptotically Anytime-Valid Quantile Treatment Effects for Online Experiments", "url": "https://arxiv.org/abs/2610.30019", "authors": "Diane Lu ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "観測が独立でないオンライン実験で、分位点の処置効果を常時監視できる信頼系列を構成した。"}, {"id": "pn41", "rank": 41, "field": "因果推論", "headline": "ネットワーク形成を変える政策の学習", "title": "Policy Learning with Network-Shaping Assignments", "url": "https://arxiv.org/abs/2610.29221", "authors": "Zhenxiao Chen ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "割り当てがその後の関係形成を変え、効果がネットワークに依存する政策を学習する方法を示した。"}, {"id": "pn42", "rank": 42, "field": "因果推論", "headline": "炭素価格付けと製造業付加価値の段階的DiD", "title": "Carbon Pricing and Manufacturing Value Added: Staggered Difference-in-Differences Evidence from National Carbon Taxes and Emissions Trading Systems", "url": "https://doi.org/10.2139/ssrn.7646959", "authors": "Sinan Borluk", "venue": "SSRN", "date": "2026-10-21", "why": "157か国の1990〜2022年のデータで、炭素税・排出量取引の導入が製造業付加価値に与えた効果を推定した。"}, {"id": "pn43", "rank": 43, "field": "因果推論", "headline": "交通部門の汚職は人命を奪う：中国の失脚事例", "title": "Highway to Hell: How Corruption in China’s Transport Sector Kills, and What Happens When Corrupt Officials Fall", "url": "https://doi.org/10.2139/ssrn.7650596", "authors": "Xianyun Zhang ほか", "venue": "SSRN", "date": "2026-10-21", "why": "交通担当の汚職官僚の失脚を使い、汚職が道路の安全に与える影響を推定した。"}, {"id": "pn44", "rank": 44, "field": "人口学", "headline": "機械学習で見るポーランドの出生意図とコロナ禍", "title": "Same Constraints in Changing Times? A Machine-Learning Approach to Childbearing and Fertility Intentions in Poland during and after the COVID-19 Pandemic", "url": "https://econpapers.repec.org/RePEc:war:wpaper:2026-32", "authors": "Anna Kurowska ほか", "venue": "RePEc NEP", "date": "2026-09-28", "why": "パネルデータと機械学習で、パンデミック期の出生の予測因子がその後も有効かを検証した。"}, {"id": "pn45", "rank": 45, "field": "オペレーションズ・リサーチ", "headline": "有限期間で評価されるSLAの費用効率的な在庫", "title": "Cost-Effective Aggregate Service-Level Agreements: Evidence from Spare Parts Inventory", "url": "https://doi.org/10.2139/ssrn.7656439", "authors": "Patrick Helm ほか", "venue": "SSRN", "date": "2026-10-22", "why": "充足率目標が有限期間で評価される補修部品のSLAで、在庫計画を費用効率よく行う方法を示した。"}, {"id": "pn46", "rank": 46, "field": "オペレーションズ・リサーチ", "headline": "並列AIエージェントの協働をグラフ構造の分散最適化として", "title": "Parallel AI Agent Collaboration as Graph-Structured Distributed Block Optimization", "url": "https://arxiv.org/abs/2610.30074", "authors": "Hanmin Li ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "並列エージェントの局所的な編集が全体を劣化させる問題を、ブロック最適化として定式化した。"}, {"id": "pn47", "rank": 47, "field": "オペレーションズ・リサーチ", "headline": "2次元交通流モデルのデータ駆動の較正", "title": "Data-driven calibration of a two-dimensional traffic flow model: Dimension reduction and optimization strategies", "url": "https://arxiv.org/abs/2610.29557", "authors": "Simone G\\\"ottlich ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "道路の縦横の動きを表す2次元交通流モデルを、次元削減と最適化で実データに較正した。"}, {"id": "pn48", "rank": 48, "field": "オペレーションズ・リサーチ", "headline": "遺伝的プログラミングによる解釈可能な切除平面の選択", "title": "Interpretable Cutting Plane Selection for Mixed-Integer Linear Programming Using Genetic Programming", "url": "https://arxiv.org/abs/2610.29311", "authors": "Gwen maudet ほか", "venue": "arXiv", "date": "Thu, 22 Oct 2026", "why": "混合整数計画の切除平面の選び方を、解釈可能な規則として遺伝的プログラミングで学習した。"}, {"id": "pn49", "rank": 49, "field": "組織行動・心理的安全性", "headline": "組織が少数の選択肢しか検討しない理由", "title": "Creativity In Alternative Design: Why Organizatios Consider Few Options and How to Expand Feasible Alternative", "url": "https://doi.org/10.2139/ssrn.7648978", "authors": "Desti Purwanti ほか", "venue": "SSRN", "date": "2026-10-22", "why": "意思決定の代替案設計の段階で、組織が少数の案しか考えない理由と、実行可能な案を広げる方法を論じた。"}, {"id": "pn50", "rank": 50, "field": "組織行動・心理的安全性", "headline": "帰属の病理：個人の自由と社会的支配", "title": "Pathologies of Belonging: Individual Freedom, Social Domination, and Collective Adaptability", "url": "https://doi.org/10.2139/ssrn.7651641", "authors": "Carlos Federico Obregon Diaz", "venue": "SSRN", "date": "2026-10-21", "why": "形式的な包摂や参加の機会があっても能力が発揮されない状況を、帰属の病理として理論化した。"}], "jnl_related": [{"id": "jr01", "rank": 1, "headline": "LLMはSNS上の熟議の質を測れるか", "title": "Can AI Gauge Deliberative Quality? Evaluating Deliberation on Social Media With Large Language Models", "url": "https://doi.org/10.17645/mac.12494", "authors": "Patrick Frey ほか", "venue": "Media and Communication", "date": "2026-10-22", "sjr": 1.089, "citescore": 6.0, "citescore_year": "2025", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "jr02", "rank": 2, "headline": "可動橋の常時微動で亀裂の前後を比較", "title": "Ambient vibration–based damage detection for sustainable railway infrastructure: a case study of the Vänersborg railway bascule bridge", "url": "https://doi.org/10.1088/1755-1315/1674/1/012057", "authors": "Quang-Vinh Pham ほか", "venue": "IOP Conference Series: Earth and Environmental Science", "date": "2026-10-22", "citescore": 1.4, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr03", "rank": 3, "headline": "孝行規範の下の介護燃え尽きの尺度開発", "title": "Filial Caregiving Burnout in the Chinese Cultural Context: Conceptualization, Scale Development, and Longitudinal Validation", "url": "https://doi.org/10.1111/famp.70212", "authors": "Bingyan Zhou ほか", "venue": "Family Process", "date": "2026-10-21", "sjr": 1.024, "citescore": 4.9, "citescore_year": "2025", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "jr04", "rank": 4, "headline": "顧客のサイバー侵害後に監査人は専門家を増やす", "title": "Auditors' Response to Clients' Cyber Breaches: A Human‐Capital Perspective", "url": "https://doi.org/10.1111/1911-3846.70092", "authors": "Bing Li ほか", "venue": "Contemporary Accounting Research", "date": "2026-10-22", "sjr": 3.686, "citescore": 7.3, "citescore_year": "2025", "theme": "会計情報科学", "theme_no": 2}, {"id": "jr05", "rank": 5, "headline": "ブランド共同体の信頼を担う人々の組み合わせ", "title": "Trust Portfolios in Online Brand Communities: Distributed Human Credibility, Trust Transfer, and Effortless Marketing", "url": "https://doi.org/10.3390/admsci16100520", "authors": "Mara F. Singer ほか", "venue": "Administrative Sciences", "date": "2026-10-21", "citescore": 6.6, "citescore_year": "2025", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "jr06", "rank": 6, "headline": "変革型リーダーシップと教師のwell-being", "title": "Exploring the link between transformational leadership and teacher professional well-being through work engagement and psychological safety", "url": "https://doi.org/10.1177/17411432261500577", "authors": "Didem Koşar ほか", "venue": "Educational Management Administration and Leadership", "date": "2026-10-22", "sjr": 1.797, "citescore": 11.2, "citescore_year": "2025", "theme": "職場AI・組織行動", "theme_no": 7}, {"id": "jr07", "rank": 7, "headline": "仏の公営住宅割当法は所得混住を進めたか", "title": "Building without income mixing: public housing quotas in France", "url": "https://doi.org/10.1093/jeg/lbag072", "authors": "Guillaume Chapelle ほか", "venue": "Journal of Economic Geography", "date": "2026-10-21", "sjr": 1.949, "citescore": 7.1, "citescore_year": "2025", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "jr08", "rank": 8, "headline": "橋梁SHMのセンサ最適配置の体系的レビュー", "title": "Optimal Sensor Placement for Bridge Structural Health Monitoring: A Systematic Review with Bibliometric Analysis and Methodological Quality Assessment", "url": "https://doi.org/10.3390/s26206661", "authors": "Gastón Luis Rodríguez Wlack ほか", "venue": "Sensors", "date": "2026-10-22", "citescore": 9.4, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr09", "rank": 9, "headline": "粒径と形状の相関を保つ砂粒子の生成", "title": "Generation of Realistic Sand Particles Preserving Marginal Distributions and Intrinsic Correlations of Size and Multilevel Morphology", "url": "https://doi.org/10.1139/cgj-2026-0643", "authors": "Meng Fan ほか", "venue": "Canadian Geotechnical Journal", "date": "2026-10-21", "sjr": 1.282, "citescore": 5.8, "citescore_year": "2025", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "jr10", "rank": 10, "headline": "財務困窮予測のモデル選択としきい値の選択", "title": "Model Selection and Threshold Selection in Financial Distress Prediction: An Empirical Analysis Based on Listed Manufacturing Companies in China", "url": "https://doi.org/10.26689/pbes.v9i9.15611", "authors": "Siqi Duan", "venue": "Proceedings of Business and Economic Studies", "date": "2026-10-22", "theme": "会計情報科学", "theme_no": 2}, {"id": "jr11", "rank": 11, "headline": "通関サービスの品質と顧客満足・忠誠", "title": "The impact of perceived service quality in customs services on customer satisfaction and customer loyalty: an analysis with structural equation modeling", "url": "https://doi.org/10.1108/jeim-04-2026-0701", "authors": "Ozgur Ozsoy ほか", "venue": "Journal of Enterprise Information Management", "date": "2026-10-22", "sjr": 1.665, "citescore": 19.6, "citescore_year": "2025", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "jr12", "rank": 12, "headline": "緊急対応での生成AI導入の障壁と促進要因", "title": "Human-AI collaboration in crisis response: understanding adoption barriers and enablers for generative AI in emergency decision-making", "url": "https://doi.org/10.1057/s41599-026-09366-3", "authors": "Liguo Fei ほか", "venue": "Humanities and Social Sciences Communications", "date": "2026-10-22", "sjr": 0.904, "citescore": 5.7, "citescore_year": "2025", "theme": "職場AI・組織行動", "theme_no": 7}, {"id": "jr13", "rank": 13, "headline": "健康な人ほど介護を担う：英国の加齢軌跡", "title": "Age trajectories of informal caregiving for older people in England: Testing the healthy caregiver hypothesis", "url": "https://doi.org/10.1093/geront/gnag249", "authors": "Bo Hu", "venue": "Gerontologist", "date": "2026-10-21", "sjr": 1.552, "citescore": 7.0, "citescore_year": "2025", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "jr14", "rank": 14, "headline": "温度と相関を考慮した架設中アーチ橋の信頼性", "title": "Reliability Analysis of Uncertain Correlation During the Construction Period of a Cantilevered Arch Considering Temperature Effects", "url": "https://doi.org/10.3390/buildings16204172", "authors": "Zujun Zhang ほか", "venue": "Buildings", "date": "2026-10-22", "sjr": 0.686, "citescore": 5.6, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr15", "rank": 15, "headline": "デザイン思考で回す多エージェントのペルソナ生成", "title": "Design Thinking–Driven Multi-Agent Method for Persona Generation", "url": "https://doi.org/10.1177/10711813261498765", "authors": "Qing Ao ほか", "venue": "Proceedings of the Human Factors and Ergonomics Society Annual Meeting", "date": "2026-10-22", "citescore": 1.1, "citescore_year": "2025", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "jr16", "rank": 16, "headline": "橋梁資産管理のための信頼できるAI意思決定支援", "title": "Toward a Trustworthy AI-Based Decision Support for Bridge Asset Management", "url": "https://doi.org/10.1061/jbenf2.beeng-8087", "authors": "Alireza Ghavidel ほか", "venue": "Journal of Bridge Engineering", "date": "2026-10-22", "citescore": 7.2, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr17", "rank": 17, "headline": "防風柵が車両の安定と橋の空力に与える影響", "title": "Influence of Wind Barriers on Vehicle Stability and Bridge Aerodynamic Performance", "url": "https://doi.org/10.1088/1755-1315/1674/1/012041", "authors": "Hoang Trong Lam ほか", "venue": "IOP Conference Series: Earth and Environmental Science", "date": "2026-10-22", "citescore": 1.4, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr18", "rank": 18, "headline": "2次元モード曲率でプレストレス床版の損傷位置推定", "title": "Damage localization in pretensioned prestressed concrete slabs based on two-dimensional modal curvature", "url": "https://doi.org/10.1088/1755-1315/1674/1/012056", "authors": "Lam N Pham ほか", "venue": "IOP Conference Series: Earth and Environmental Science", "date": "2026-10-22", "citescore": 1.4, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr19", "rank": 19, "headline": "変換器由来の汚染下での出力のみモード同定", "title": "Physical Energy Relevance for Output-Only Modal Identification Under Converter-Induced Spectral Contamination in Power Systems", "url": "https://doi.org/10.3390/electricity7040126", "authors": "Ángel González-Domínguez ほか", "venue": "Electricity", "date": "2026-10-22", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr20", "rank": 20, "headline": "画像とジャイロの融合で路面状態を監視", "title": "Multimodal Fusion of Visual and Gyroscopic Data for Road Surface Monitoring Using ResNet50-Based Transfer Learning", "url": "https://doi.org/10.3390/app162010409", "authors": "Woohoon Jeon ほか", "venue": "Applied Sciences", "date": "2026-10-21", "citescore": 6.1, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr21", "rank": 21, "headline": "液状化した海底上の界面波と土砂の巻き上げ", "title": "Characteristics of Interfacial Waves Over a Liquefied Seabed and Their Effects on Sediment Suspension", "url": "https://doi.org/10.1029/2026jc024954", "authors": "Heyu Yu ほか", "venue": "Journal of Geophysical Research: Oceans", "date": "2026-10-22", "sjr": 1.376, "citescore": 5.5, "citescore_year": "2025", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "jr22", "rank": 22, "headline": "大規模な振動音響連成問題の縮約モデルの拡張性", "title": "Numerical Scalability of Model Order Reduction Techniques for Very Large, Strongly Coupled Vibroacoustic Problems", "url": "https://doi.org/10.1007/s40857-026-00410-5", "authors": "Linus Taenzer ほか", "venue": "Acoustics Australia", "date": "2026-10-22", "citescore": 3.8, "citescore_year": "2025", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "jr23", "rank": 23, "headline": "移動を考慮した洪水曝露と回避手段の格差", "title": "From Equality to Equity: The Dual Socioeconomic Inequalities of Mobility-Based Exposure and Exposure Avoidance Options during Urban Floods", "url": "https://doi.org/10.1021/acs.est.6c06636", "authors": "Entong Ke ほか", "venue": "Environmental Science & Technology", "date": "2026-10-21", "sjr": 3.776, "citescore": 18.9, "citescore_year": "2025", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "jr24", "rank": 24, "headline": "エネルギーと交通のインフラは利用者を取り残す", "title": "Energy and transport infrastructure is failing the people it serves", "url": "https://doi.org/10.1088/2634-4505/aeb71f", "authors": "Marissa Bergman ほか", "venue": "Environmental Research Infrastructure and Sustainability", "date": "2026-10-21", "citescore": 5.6, "citescore_year": "2025", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "jr25", "rank": 25, "headline": "解釈可能な機械学習で入院中医薬サービスの原価要因", "title": "Interpretable machine learning for identifying cost drivers of inpatient traditional Chinese medicine services in a tertiary hospital in China", "url": "https://doi.org/10.3389/fpubh.2026.1937712", "authors": "Li Xi ほか", "venue": "Frontiers in Public Health", "date": "2026-10-21", "citescore": 6.4, "citescore_year": "2025", "theme": "会計情報科学", "theme_no": 2}, {"id": "jr26", "rank": 26, "headline": "企業規模と地域がESG評価に与える影響", "title": "Firm Size and Contextual Correlates of Refinitiv ESG Ratings: International Evidence Across ESG Pillars", "url": "https://doi.org/10.1002/csr.71117", "authors": "Ana Lejárraga García ほか", "venue": "Corporate Social Responsibility and Environmental Management", "date": "2026-10-22", "sjr": 2.147, "citescore": 14.5, "citescore_year": "2025", "theme": "会計情報科学", "theme_no": 2}, {"id": "jr27", "rank": 27, "headline": "AI活用が財務諸表不正の発見に与える影響", "title": "The Impact of Artificial Intelligence Application on Fraud Detection in Financial Statements: The Mediating Role of Accounting Information System Quality", "url": "https://doi.org/10.59324/ejmeb.2026.3(5).14", "authors": "Hasan Maytham Kareem", "venue": "HAL (ART) European Journal of Management, Economics and Business", "date": "2026-10-21", "theme": "会計情報科学", "theme_no": 2}, {"id": "jr28", "rank": 28, "headline": "AIクラウドの利用継続と切替コスト", "title": "Understanding Users' Stickiness in AI-Enabled Cloud Services From the Perspective of Process Virtualization Theory and Switching Costs", "url": "https://doi.org/10.4018/jgim.425560", "authors": "Ya‐Ling Wu ほか", "venue": "Journal of Global Information Management", "date": "2026-10-21", "citescore": 7.5, "citescore_year": "2025", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "jr29", "rank": 29, "headline": "人とロボットのサービス職場への応募意向", "title": "Sustainable human-robot services: ESG, diversity, and attractiveness in job pursuit", "url": "https://doi.org/10.1108/jhtt-11-2025-1085", "authors": "Myung Ja Kim ほか", "venue": "Journal of Hospitality and Tourism Technology", "date": "2026-10-22", "sjr": 1.785, "citescore": 13.8, "citescore_year": "2025", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "jr30", "rank": 30, "headline": "錯覚的優越感が持続可能な食の選択を妨げる", "title": "Attend But Disengage: How Illusory Superiority Disrupts Sustainable Food Decision‐Making", "url": "https://doi.org/10.1002/mar.70289", "authors": "Chien Duong ほか", "venue": "Psychology and Marketing", "date": "2026-10-22", "sjr": 3.642, "citescore": 17.7, "citescore_year": "2025", "theme": "サービス・マーケティング", "theme_no": 3}, {"id": "jr31", "rank": 31, "headline": "国境を越えた統治のための熟議の拡大", "title": "Scaling Democratic Deliberation for Transnational Governance Through Civil Democracy", "url": "https://doi.org/10.1111/1758-5899.70244", "authors": "Hanno Scholtz", "venue": "Global Policy", "date": "2026-10-22", "citescore": 4.0, "citescore_year": "2025", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "jr32", "rank": 32, "headline": "多主体シミュレーションによる緑の知的資本の流れ", "title": "Unlocking ecosystemic green intellectual capital: a multi-agent simulation of institutional thresholds and dynamic knowledge flows", "url": "https://doi.org/10.1108/jic-07-2026-0446", "authors": "Kuoyi Lin ほか", "venue": "Journal of Intellectual Capital", "date": "2026-10-22", "sjr": 1.382, "citescore": 14.9, "citescore_year": "2025", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"id": "jr33", "rank": 33, "headline": "アルゴリズム管理とギグワーカーのwell-being", "title": "The Effect of Algorithmic Management on Psychological Well-Being of Gig Workers: Moderating Role of Perceived Autonomy", "url": "https://doi.org/10.65080/ajbmss.v2i2.cm2622101031", "authors": "Muhammad Qasim", "venue": "AJBMSS - Advance Journal of Business Management and Social Sciences", "date": "2026-10-22", "theme": "職場AI・組織行動", "theme_no": 7}, {"id": "jr34", "rank": 34, "headline": "ホテル従業員のAI導入と雇用不安", "title": "ARTIFICIAL INTELLIGENCE INTEGRATION AND JOB INSECURITY AMONG HOTEL EMPLOYEES IN KUALA LUMPUR", "url": "https://doi.org/10.35631/jthem.1145021", "authors": "Dziatul Nadiah Dzia-Uddin ほか", "venue": "Journal of Tourism Hospitality and Environment Management", "date": "2026-10-22", "theme": "職場AI・組織行動", "theme_no": 7}, {"id": "jr35", "rank": 35, "headline": "人が関与するAIによる強靭なサプライチェーン運営", "title": "Human-in-the-Loop AI for resilient supply chain operations: a framework for augmented decision-making and ethical deployment", "url": "https://doi.org/10.1108/itp-09-2025-1431", "authors": "Mehtab Alam ほか", "venue": "Information Technology and People", "date": "2026-10-22", "sjr": 1.956, "citescore": 15.5, "citescore_year": "2025", "theme": "職場AI・組織行動", "theme_no": 7}, {"id": "jr36", "rank": 36, "headline": "家族と専門職の介護者が認知症の意味を捉え直す", "title": "Redefining the meaning of dementia: A qualitative study of meaning, stigma, and care experiences among family and professional carers", "url": "https://doi.org/10.1002/dad2.70521", "authors": "Anna Tjin ほか", "venue": "Alzheimer's and Dementia: Diagnosis, Assessment and Disease Monitoring", "date": "2026-10-22", "sjr": 1.774, "citescore": 7.1, "citescore_year": "2025", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "jr37", "rank": 37, "headline": "農村地域で高齢者ケアの共同体を育てる", "title": "Stories from ‘Who Cares?’ : Cultivating a Community of Aging Care on the Sunshine Coast, British Columbia", "url": "https://doi.org/10.1017/s0714980826100865", "authors": "Colleen J. Reid ほか", "venue": "Canadian Journal on Aging / La Revue canadienne du vieillissement", "date": "2026-10-21", "citescore": 3.6, "citescore_year": "2025", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "jr38", "rank": 38, "headline": "若年単身世帯の社会的支援と孤独の経路", "title": "The Relationship between Social Support and Loneliness among Young Single-Person Households: The Sequential Mediating Effects of Mental Well-Being and Future Expectations", "url": "https://doi.org/10.14251/crisisonomy.2026.22.9.283", "authors": "Yu Mi Jung ほか", "venue": "Crisis and Emergency Management: Theory and Praxis", "date": "2026-10-22", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "jr39", "rank": 39, "headline": "移民の地域団体でのネットワークづくりとキャリア", "title": "Networking in Immigrant Community-Based Organizations: A Career Development Resource for Immigrants", "url": "https://doi.org/10.1177/10690727261496523", "authors": "Mohamed A. Khalil ほか", "venue": "Journal of Career Assessment", "date": "2026-10-21", "sjr": 1.413, "citescore": 7.0, "citescore_year": "2025", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "jr40", "rank": 40, "headline": "気候変動下の心の支えとしての地域社会関係資本", "title": "Community Social Capital as a Mental Health Lifeline in a Changing Climate: Mechanisms, Opportunities, and Limitations", "url": "https://doi.org/10.1155/hsc/7184225", "authors": "Majani Edward", "venue": "Health & Social Care in the Community", "date": "2026-10-21", "citescore": 6.7, "citescore_year": "2025", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"id": "jr41", "rank": 41, "headline": "OpenSeesによる車両-橋梁連成解析の公開枠組み", "title": "An open-source framework for coupled vehicle-bridge interaction analysis using OpenSees", "url": "https://doi.org/10.1016/j.iintel.2026.100253", "authors": "Mohammad Talebi-Kalaleh ほか", "venue": "Journal of Infrastructure Intelligence and Resilience", "date": "2026-10-21", "citescore": 8.8, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr42", "rank": 42, "headline": "減衰を含む橋のモード形を車両応答から抽出", "title": "Vehicle Response-based Mode Shape Extraction of Damped Bridges Using an Enhanced Three-step Approach", "url": "https://doi.org/10.1007/s42417-026-02804-1", "authors": "J. Prawin ほか", "venue": "Journal of Vibration Engineering & Technologies", "date": "2026-10-22", "citescore": 4.5, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr43", "rank": 43, "headline": "MCMCによる2段階のベイズモデル更新", "title": "Two-stage fundamental Bayesian model updating method based on MCMC algorithm", "url": "https://doi.org/10.1016/j.istruc.2026.113265", "authors": "Feng-Liang Zhang ほか", "venue": "Structures", "date": "2026-10-21", "sjr": 1.108, "citescore": 7.1, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr44", "rank": 44, "headline": "車両吸振器の機械-油圧の等価ネットワーク", "title": "Mechanical-hydraulic equivalence of vibration suppression networks for vehicle absorber design", "url": "https://doi.org/10.1080/00423114.2026.2751605", "authors": "Haonan He ほか", "venue": "Vehicle System Dynamics", "date": "2026-10-22", "sjr": 1.413, "citescore": 11.3, "citescore_year": "2025", "theme": "VBI・橋梁SHM", "theme_no": 1}, {"id": "jr45", "rank": 45, "headline": "郊外化する中国都市のスマートシティの成果", "title": "Smart city performance in suburbanizing contexts: A configurational and exploratory analysis of Chinese cities", "url": "https://doi.org/10.1016/j.cities.2026.107707", "authors": "Fan Shi ほか", "venue": "Cities", "date": "2026-10-22", "sjr": 1.772, "citescore": 11.5, "citescore_year": "2025", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "jr46", "rank": 46, "headline": "北京の住宅価格に織り込まれた洪水リスク", "title": "Pricing urban flood risk: Evidence from the housing market in Beijing", "url": "https://doi.org/10.1016/j.cities.2026.107732", "authors": "Dan Fang ほか", "venue": "Cities", "date": "2026-10-22", "sjr": 1.772, "citescore": 11.5, "citescore_year": "2025", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "jr47", "rank": 47, "headline": "建築環境の多感覚知覚を人のセンシングで測る", "title": "Human sensing data for assessing multisensory perception in the built environment: A systematic review from mechanisms to planning", "url": "https://doi.org/10.1016/j.buildenv.2026.115477", "authors": "Haotian Wang ほか", "venue": "Building and Environment", "date": "2026-10-21", "sjr": 1.906, "citescore": 15.0, "citescore_year": "2025", "theme": "都市・インフラ政策", "theme_no": 6}, {"id": "jr48", "rank": 48, "headline": "岩盤斜面崩壊の個別要素法モデルの課題", "title": "Challenges in modelling rock slope failures using a distinct element method: A critical analysis based on the 2023 Brienz/Brinzauls ’Insel’ landslide", "url": "https://doi.org/10.1016/j.enggeo.2026.109131", "authors": "Livia Pierhöfer ほか", "venue": "Engineering Geology", "date": "2026-10-21", "sjr": 2.913, "citescore": 14.0, "citescore_year": "2025", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "jr49", "rank": 49, "headline": "海底地すべりが管路に与える流体力", "title": "Hydrodynamic loads on tandem twin pipelines induced by submarine landslides: Insights from physical flume tests and SPH simulations", "url": "https://doi.org/10.1016/j.oceaneng.2026.129022", "authors": "Zili Dai ほか", "venue": "Ocean Engineering", "date": "2026-10-22", "sjr": 1.524, "citescore": 10.2, "citescore_year": "2025", "theme": "確率動力学・計算力学", "theme_no": 8}, {"id": "jr50", "rank": 50, "headline": "分割統治による動的な財務困窮予測", "title": "IMS-MAUKF: A novel dynamic divide-and-conquer approach for financial distress prediction", "url": "https://doi.org/10.1016/j.bdr.2026.100655", "authors": "Mao Zengli ほか", "venue": "Big Data Research", "date": "2026-10-22", "citescore": 9.3, "citescore_year": "2025", "theme": "会計情報科学", "theme_no": 2}], "jnl_notable": [{"id": "jn01", "rank": 1, "field": "経済学", "headline": "言葉の介入が多様性の経済的利益を引き出す", "title": "Linguistic intervention unlocks the economic gains of diversity", "url": "https://doi.org/10.1073/pnas.2534825123", "authors": "Sheen S. Levine ほか", "venue": "Proceedings of the National Academy of Sciences", "date": "2026-10-21", "sjr": 3.283, "citescore": 14.7, "citescore_year": "2025", "why": "人種の見える実験経済で、異人種間の取引が滞ると全体の厚生が下がることと、それを言語的な介入で改善できることを示した。多様性と取引利益の関係を因果的に検証している。"}, {"id": "jn02", "rank": 2, "field": "経営学", "headline": "人脈の中心になるよう払うと離職はどうなるか", "title": "Pay‐for‐prominence: The (un)intended consequences of monetary incentives on employees' networks and attrition", "url": "https://doi.org/10.1002/smj.70133", "authors": "Alessandro Iorio ほか", "venue": "Strategic Management Journal", "date": "2026-10-22", "sjr": 10.154, "citescore": 17.2, "citescore_year": "2025", "why": "社内ネットワークの中心になることへの金銭的報酬という新しい制度の効果を、ネットワークと離職の両面から検証した。インセンティブ設計の意図せざる帰結を示す。"}, {"id": "jn03", "rank": 3, "field": "都市・インフラ", "headline": "熱波が欧州送電網の容量を詰まらせる", "title": "Heatwave-induced capacity bottlenecks in European electricity grids", "url": "https://doi.org/10.1038/s41560-026-02151-1", "authors": "Enming Liang ほか", "venue": "Nature Energy", "date": "2026-10-22", "sjr": 20.769, "citescore": 78.4, "citescore_year": "2025", "why": "気温上昇が送電容量をどれだけ削るかを、計算効率の高い統一的な枠組みで欧州規模で定量化した。気候変動下の電力インフラ計画に直結する。"}, {"id": "jn04", "rank": 4, "field": "経済学", "headline": "オプション価格に表れる信念は動きすぎか", "title": "Excess Movement in Option‐Implied Beliefs", "url": "https://doi.org/10.1111/jofi.70086", "authors": "NED AUGENBLICK ほか", "venue": "The Journal of Finance", "date": "2026-10-22", "sjr": 22.27, "citescore": 16.8, "citescore_year": "2025", "why": "主観的分布を知らなくても使える、リスク中立信念の合理的な変動幅の上限を導き、市場の信念の過剰な動きを検定した。"}, {"id": "jn05", "rank": 5, "field": "統計学", "headline": "行列因子構造を一般化尤度比で検定する", "title": "Testing matrix factor structure via generalized likelihood ratio", "url": "https://doi.org/10.1093/biomet/asag066", "authors": "Xinbing Kong ほか", "venue": "Biometrika", "date": "2026-10-22", "sjr": 3.4, "citescore": 5.4, "citescore_year": "2025", "why": "高次元データの因子負荷がクロネッカー構造を持つかを検定する方法で、回転の非識別性という長年の障害に対処した。"}, {"id": "jn06", "rank": 6, "field": "統計学", "headline": "近傍交差検証を高速・正確に計算する", "title": "On Neighbourhood Cross Validation", "url": "https://doi.org/10.1214/25-sts1015", "authors": "Simon N. Wood", "venue": "Statistical Science", "date": "2026-10-22", "sjr": 2.085, "citescore": 7.4, "citescore_year": "2025", "why": "二次罰則付き回帰の幅広いモデルで、多様な交差検証基準を効率よく計算・最適化する方法を示した。平滑化パラメータ選択の標準を変えうる。"}, {"id": "jn07", "rank": 7, "field": "組織行動・心理的安全性", "headline": "複雑な協働で変化と安定の緊張を小さく扱う", "title": "It's in the Small Steps: Navigating Knotted Change‐Stability Tensions in Complex Collaborations", "url": "https://doi.org/10.1111/joms.70181", "authors": "Lea Stadtler ほか", "venue": "Journal of Management Studies", "date": "2026-10-22", "sjr": 5.178, "citescore": 14.7, "citescore_year": "2025", "why": "社会課題に取り組む協働で、変化と安定、集団と個人の絡み合った緊張がどう扱われるかを過程として明らかにした。"}, {"id": "jn08", "rank": 8, "field": "機械学習", "headline": "構造的バイアスで群ロボットの実機移行を安定化", "title": "Structural bias enables reliable sim-to-real transfer in reinforcement learning for robot swarms", "url": "https://doi.org/10.1126/scirobotics.adw4624", "authors": "Ilyes Gharbi ほか", "venue": "Science Robotics", "date": "2026-10-21", "sjr": 5.883, "citescore": 32.1, "citescore_year": "2025", "why": "強化学習で得た群ロボットの方策を、構造的な帰納バイアスによって実機へ確実に移す方法を体系的に示した。"}, {"id": "jn09", "rank": 9, "field": "経営学", "headline": "自社株の発行と買戻しの方法はなぜ非対称か", "title": "Share Issues vs. Share Repurchases", "url": "https://doi.org/10.1287/mnsc.2025.03301", "authors": "Philip Bond ほか", "venue": "Management Science", "date": "2026-10-21", "sjr": 6.428, "citescore": 11.8, "citescore_year": "2025", "why": "自社株買いは市場買付が主流なのに発行は方法が多様という非対称性を説明した。企業金融の実務の謎に答える。"}, {"id": "jn10", "rank": 10, "field": "組織行動・心理的安全性", "headline": "政治色を抜いた言葉でDEI研修への態度が改善", "title": "Depoliticizing Language Improves Attitudes Toward Diversity Training", "url": "https://doi.org/10.1177/19485506261495620", "authors": "Devon Proudfoot ほか", "venue": "Social Psychological and Personality Science", "date": "2026-10-22", "sjr": 2.179, "citescore": 11.8, "citescore_year": "2025", "why": "政治で使われるDEI用語を職場の言葉に置き換えると、支持政党を問わず研修への態度が良くなることを3つの実験で示した。"}, {"id": "jn11", "rank": 11, "field": "統計学", "headline": "分析の盲検化で事前登録を補う", "title": "Analysis Blinding as a Complement to Preregistration: A Tutorial for Network Analysis", "url": "https://doi.org/10.1177/25152459261481079", "authors": "Ria H. A. Hoekstra ほか", "venue": "Advances in Methods and Practices in Psychological Science", "date": "2026-10-22", "sjr": 6.094, "citescore": 14.8, "citescore_year": "2025", "why": "ネットワーク分析で、データ依存の判断が残る事前登録を分析の盲検化で補う手順を示した。確認的研究の信頼性を高める。"}, {"id": "jn12", "rank": 12, "field": "人口学", "headline": "親は支援網が小さいが関係が密", "title": "Parents Have Smaller Support Networks but More Close-Knit Relationships Than Childfree and Other Non-Parent Adults", "url": "https://doi.org/10.1177/19485506261496101", "authors": "Olivia Crawford ほか", "venue": "Social Psychological and Personality Science", "date": "2026-10-22", "sjr": 2.179, "citescore": 11.8, "citescore_year": "2025", "why": "子を持たない人を細かく分類し、親との支援ネットワークの構造と質の違いを示した。少子化社会の社会的統合を考える材料になる。"}, {"id": "jn13", "rank": 13, "field": "オペレーションズ・リサーチ", "headline": "供給網の圧力下の在庫調整と運転資本", "title": "Inventory adjustment under global supply chain pressure: the moderating role of working capital structure", "url": "https://doi.org/10.1108/ijopm-05-2026-0757", "authors": "Rahul Pandey ほか", "venue": "International Journal of Operations and Production Management", "date": "2026-10-21", "sjr": 2.983, "citescore": 15.1, "citescore_year": "2025", "why": "世界的な供給網の圧力が企業の在庫調整にどう効き、それが仕入信用や流動性でどう変わるかを示した。"}, {"id": "jn14", "rank": 14, "field": "機械学習", "headline": "群ロボットが「囲いの形を聴く」", "title": "Hearing the shape of an arena with spectral swarm robotics", "url": "https://doi.org/10.1126/scirobotics.adr9578", "authors": "Leo Cazenille ほか", "venue": "Science Robotics", "date": "2026-10-21", "sjr": 5.883, "citescore": 32.1, "citescore_year": "2025", "why": "最小限の感覚しか持たない群ロボットが、スペクトルの考え方で自分たちのいる空間の形を集団として推定する枠組みを示した。"}, {"id": "jn15", "rank": 15, "field": "経営学", "headline": "生成AIの豊富さが生む専門性と成果の分離", "title": "Everything everywhere all‐at‐once? AI , expertise–output decoupling, and new entrepreneurial strategy trade‐offs in the age of abundance", "url": "https://doi.org/10.1002/sej.70065", "authors": "Jen Gennai ほか", "venue": "Strategic Entrepreneurship Journal", "date": "2026-10-22", "sjr": 3.821, "citescore": 11.4, "citescore_year": "2025", "why": "生成AIで起業の発想は容易になるが、説明可能性・追跡可能性・一般化可能性という隠れた費用が生じることを論じた。"}, {"id": "jn16", "rank": 16, "field": "経済学", "headline": "大退職は離職でなく転職だった：イタリア", "title": "Reshaping Work: Job Reallocation and Job Attributes During the Great Resignation in Italy", "url": "https://doi.org/10.1111/irel.70048", "authors": "Francesco Suppressa ほか", "venue": "Industrial Relations", "date": "2026-10-22", "sjr": 1.521, "citescore": 5.3, "citescore_year": "2025", "why": "イタリアの「大退職」が労働市場からの退出か職の移動かを行政データで検証し、仕事の属性の再配分を示した。"}, {"id": "jn17", "rank": 17, "field": "経営学", "headline": "生成AIは起業機会の持続的優位を損なうか", "title": "Generative AI and the ability of entrepreneurial opportunities to generate sustained competitive advantages", "url": "https://doi.org/10.1002/sej.70064", "authors": "Haiyang Zhang ほか", "venue": "Strategic Entrepreneurship Journal", "date": "2026-10-21", "sjr": 3.821, "citescore": 11.4, "citescore_year": "2025", "why": "生成AIが起業機会から持続的な競争優位を生む力にどう影響するかを理論的に論じた。"}, {"id": "jn18", "rank": 18, "field": "組織行動・心理的安全性", "headline": "組織における「権力の署名」という見方", "title": "Organization and the Signature of Power", "url": "https://doi.org/10.1177/01708406261499491", "authors": "Mitchell Dean ほか", "venue": "Organization Studies", "date": "2026-10-22", "sjr": 4.358, "citescore": 11.4, "citescore_year": "2025", "why": "現代の権力を署名として捉える枠組みを提示し、組織研究で政治を理解する新しい視点を示した。"}, {"id": "jn19", "rank": 19, "field": "組織行動・心理的安全性", "headline": "組織理論が本当に役立つとしたら", "title": "What if OMT Actually Mattered?", "url": "https://doi.org/10.1177/10564926261496789", "authors": "Michael Lounsbury", "venue": "Journal of Management Inquiry", "date": "2026-10-22", "sjr": 2.292, "citescore": 8.3, "citescore_year": "2025", "why": "組織・経営理論の研究のあり方を問い直す講演に基づく論考。"}, {"id": "jn20", "rank": 20, "field": "組織行動・心理的安全性", "headline": "コロナ禍の校長の自己効力感と仕事への熱意", "title": "Temporary shocks, stable beliefs: A three-wave longitudinal study of school leaders’ self-efficacy and work engagement across the COVID-19 pandemic (2019–2022)", "url": "https://doi.org/10.1177/17411432261497513", "authors": "Marcus Pietsch ほか", "venue": "Educational Management Administration and Leadership", "date": "2026-10-22", "sjr": 1.797, "citescore": 11.2, "citescore_year": "2025", "why": "3時点の縦断データで、外的衝撃の下でも学校指導者の信念が安定していたことを示した。"}, {"id": "jn21", "rank": 21, "field": "人口学", "headline": "子なし・介護なしのテレワーク希望は採用で不利", "title": "No Kids, No Care, No Telework: Hiring Penalties When Requesting Telework", "url": "https://doi.org/10.1111/jomf.70126", "authors": "Samantha Brady ほか", "venue": "Journal of Marriage and Family", "date": "2026-10-22", "sjr": 1.821, "citescore": 6.4, "citescore_year": "2025", "why": "応募者のテレワーク希望が家族のケア責任や性別と組み合わさって採用判断にどう影響するかを実験で示した。"}, {"id": "jn22", "rank": 22, "field": "オペレーションズ・リサーチ", "headline": "持続可能性情報が調達判断を偏らせる", "title": "Biased by sustainability? How cognitive biases shape procurement decisions under information equivocality", "url": "https://doi.org/10.1108/ijopm-10-2025-1084", "authors": "Chiara Vagnini ほか", "venue": "International Journal of Operations and Production Management", "date": "2026-10-22", "sjr": 2.983, "citescore": 15.1, "citescore_year": "2025", "why": "情報が多義的なとき、管理者の認知バイアスが持続可能性に関わる調達判断をどう歪めるかを示した。"}, {"id": "jn23", "rank": 23, "field": "オペレーションズ・リサーチ", "headline": "グリーンサービスを含む供給網の需要情報共有", "title": "Demand information sharing strategies in supply chains with green services and consumer-to-manufacturer", "url": "https://doi.org/10.1057/s41599-026-09517-6", "authors": "Xue Chen ほか", "venue": "Humanities and Social Sciences Communications", "date": "2026-10-22", "sjr": 0.904, "citescore": 5.7, "citescore_year": "2025", "why": "製造者とグリーンサービス基盤からなる供給網で、需要情報をいつ共有すべきかをゲーム理論で分析した。"}, {"id": "jn24", "rank": 24, "field": "機械学習", "headline": "AIコーディングエージェントのリファクタリング実態", "title": "Agentic Refactoring: An Empirical Study of AI Coding Agents", "url": "https://doi.org/10.1145/3859242", "authors": "Kosei Horikawa ほか", "venue": "ACM Transactions on Software Engineering and Methodology", "date": "2026-10-22", "sjr": 1.59, "citescore": 11.6, "citescore_year": "2025", "why": "Codex・Claude Code・Cursorなどのエージェントが行うリファクタリングを実証的に分析した。"}, {"id": "jn25", "rank": 25, "field": "機械学習", "headline": "NMRスペクトルと構造を双方向に結ぶ基盤モデル", "title": "PRISM, a Bidirectional NMR Foundation Model: From Peak List to Structure and Back", "url": "https://doi.org/10.1002/anie.7185622", "authors": "Ajnabiul Hoque ほか", "venue": "Angewandte Chemie - International Edition", "date": "2026-10-22", "sjr": 5.495, "citescore": 25.7, "citescore_year": "2025", "why": "ピークリストから分子構造へ、構造からピークへの双方向の予測を行う基盤モデルを示した。"}, {"id": "jn26", "rank": 26, "field": "機械学習", "headline": "記憶を持つ材料で機械的に学習する", "title": "In-memory phononic learning toward cognitive mechanical intelligence", "url": "https://doi.org/10.1126/sciadv.aeh9320", "authors": "Yuning Zhang ほか", "venue": "Science Advances", "date": "2026-10-21", "sjr": 4.534, "citescore": 19.0, "citescore_year": "2025", "why": "記憶と情報処理を機械的な領域で統合し、材料そのものが学習するフォノニック計算を示した。"}, {"id": "jn27", "rank": 27, "field": "地球科学", "headline": "小規模渦の反作用が海洋熱波を抑える", "title": "Submesoscale feedback suppresses marine heatwaves", "url": "https://doi.org/10.1126/sciadv.aei4624", "authors": "Jihai Dong ほか", "venue": "Science Advances", "date": "2026-10-21", "sjr": 4.534, "citescore": 19.0, "citescore_year": "2025", "why": "海洋熱波の強さを左右する基本的な仕組みとして、サブメソスケールの反作用が熱波を抑えることを示した。"}, {"id": "jn28", "rank": 28, "field": "物理学", "headline": "ゼロ磁場で動く不揮発メモリ付きスピン波回路", "title": "Zero-field spin-wave networks with integrated non-volatile memory", "url": "https://doi.org/10.1038/s41563-026-02778-1", "authors": "K. O. Nikolaev ほか", "venue": "Nature Materials", "date": "2026-10-22", "sjr": 13.131, "citescore": 56.9, "citescore_year": "2025", "why": "スピン波で信号処理する回路に、外部磁場なしで動作し不揮発メモリを組み込む方法を示した。"}, {"id": "jn29", "rank": 29, "field": "物理学", "headline": "ペロブスカイトとシリコンの積層太陽電池で30%超", "title": "Cesium-Triiodide-Mediated Crystallization Regulation of Pure-Iodide Wide-Bandgap Perovskites Enables Perovskite-Silicon Tandem Solar Cells Exceeding 30% Efficiency", "url": "https://doi.org/10.1021/acsenergylett.6c02522", "authors": "Xiaopeng Zhao ほか", "venue": "ACS Energy Letters", "date": "2026-10-21", "sjr": 5.783, "citescore": 27.9, "citescore_year": "2025", "why": "ヨウ化物のみの広いバンドギャップのペロブスカイトの結晶化制御で、積層太陽電池の効率30%超を達成した。"}, {"id": "jn30", "rank": 30, "field": "経営学", "headline": "AIによるエコデザインと人間の決定権限", "title": "Artificial Intelligence‐Mediated Eco‐Design and Environmental Strategy: Human Decision Authority, Sustainability Disclosure, and Lifecycle Accountability", "url": "https://doi.org/10.1002/bse.71739", "authors": "Nicholas Paparoidamis ほか", "venue": "Business Strategy and the Environment", "date": "2026-10-22", "sjr": 3.678, "citescore": 23.8, "citescore_year": "2025", "why": "AIが持続可能な製品設計を担うとき、人間の決定権限と開示・責任をどう位置づけるかを論じた。"}, {"id": "jn31", "rank": 31, "field": "経営学", "headline": "ビッグデータはESG成績を高めるか", "title": "Big Data and ESG Performance: The Moderating Role of Corporate Social Responsibility in Chinese Listed Firms", "url": "https://doi.org/10.1002/csr.71113", "authors": "Priscilla Tuffour ほか", "venue": "Corporate Social Responsibility and Environmental Management", "date": "2026-10-21", "sjr": 2.147, "citescore": 14.5, "citescore_year": "2025", "why": "中国上場企業で、ビッグデータの活用とESG成績の関係がCSRによってどう変わるかを分析した。"}, {"id": "jn32", "rank": 32, "field": "統計学", "headline": "大規模な学際研究での混合研究法の進め方", "title": "Navigating Complexity Through Mixed Methods Research: Insights from a Large-Scale Interdisciplinary Environmental Study of Biodiversity and Human Wellbeing", "url": "https://doi.org/10.1177/15586898261491475", "authors": "Robert D. Fish ほか", "venue": "Journal of Mixed Methods Research", "date": "2026-10-22", "sjr": 3.24, "citescore": 13.8, "citescore_year": "2025", "why": "生物多様性と人の幸福に関する大規模研究の経験から、混合研究法の複雑さへの対処を論じた。"}, {"id": "jn33", "rank": 33, "field": "経済学", "headline": "土地所有と燃料用バイオマスの入手方法", "title": "Who collects, who purchases? Land ownership and biomass acquisition in LMICs", "url": "https://doi.org/10.1088/1748-9326/aeb70c", "authors": "Jennifer Uju Dim ほか", "venue": "Environmental Research Letters", "date": "2026-10-21", "sjr": 1.933, "citescore": 9.3, "citescore_year": "2025", "why": "11か国の家計調査で、農地所有と燃料の採集・購入の関係を分析した。"}, {"id": "jn34", "rank": 34, "field": "経営学", "headline": "デジタルと実体産業の統合と輸出の高度化", "title": "Digital-real industrial technology integration, knowledge interfaces, and firms’ export sophistication", "url": "https://doi.org/10.1108/jkm-05-2026-0897", "authors": "Sen Gao ほか", "venue": "Journal of Knowledge Management", "date": "2026-10-22", "sjr": 2.382, "citescore": 17.6, "citescore_year": "2025", "why": "デジタル技術と製造の統合、知識の接点が企業の輸出の高度化にどう効くかを分析した。"}, {"id": "jn35", "rank": 35, "field": "経営学", "headline": "BLM運動への企業の修辞的応答と正統性", "title": "Corporate Social Responsibility, Legitimacy, and Rhetorical Responses to Social Activism: Evidence From the Black Lives Matter Movement", "url": "https://doi.org/10.1002/csr.71098", "authors": "Mohammed Hossain ほか", "venue": "Corporate Social Responsibility and Environmental Management", "date": "2026-10-22", "sjr": 2.147, "citescore": 14.5, "citescore_year": "2025", "why": "大企業が社会運動にどう修辞的に応答し、正統性を構築・管理するかを分析した。"}, {"id": "jn36", "rank": 36, "field": "組織行動・心理的安全性", "headline": "リーダーの感謝表現は相手で受け止めが変わる", "title": "Closer to the leader, above the coworkers? How leader gratitude expression shapes employee responses across relational targets", "url": "https://doi.org/10.1016/j.obhdp.2026.104538", "authors": "Hun Whee Lee ほか", "venue": "Organizational Behavior and Human Decision Processes", "date": "2026-10-22", "citescore": 7.5, "citescore_year": "2025", "why": "リーダーの感謝表現が、リーダーとの関係と同僚との比較の両面で従業員の反応にどう影響するかを扱う。"}, {"id": "jn37", "rank": 37, "field": "経済学", "headline": "長期金利は短期のリスクプレミアム推定に役立つか", "title": "Do long-term yields help to estimate short-term risk premia?", "url": "https://doi.org/10.1016/j.jfineco.2026.104386", "authors": "Andrea Berardi ほか", "venue": "Journal of Financial Economics", "date": "2026-10-22", "sjr": 18.748, "citescore": 20.7, "citescore_year": "2025", "why": "長期金利の情報が短期リスクプレミアムの推定を改善するかを問う。"}, {"id": "jn38", "rank": 38, "field": "経営学", "headline": "指導者との差別化と研究生産性の男女差", "title": "Differentiation from mentors and the gender productivity gap in research: Evidence from electrical engineering", "url": "https://doi.org/10.1016/j.respol.2026.105653", "authors": "Denis Trapido", "venue": "Research Policy", "date": "2026-10-22", "citescore": 17.6, "citescore_year": "2025", "why": "電気工学の研究者で、指導者からの差別化と生産性の男女差の関係を扱う。"}, {"id": "jn39", "rank": 39, "field": "機械学習", "headline": "暗黙の視覚ツールで効率的なマルチモーダル推論", "title": "Beyond the Eye: Efficient Multimodal Reasoning Via Self-Regulated Implicit Visual Tools", "url": "https://doi.org/10.1109/tpami.2026.3745877", "authors": "Xiuwei Chen ほか", "venue": "IEEE Transactions on Pattern Analysis and Machine Intelligence", "date": "2026-10-21", "sjr": 4.829, "citescore": 41.1, "citescore_year": "2025", "why": "自己調整的な暗黙の視覚ツールによる効率的なマルチモーダル推論を扱う。"}, {"id": "jn40", "rank": 40, "field": "機械学習", "headline": "空間高次元データ解釈の情報非対称の分離", "title": "Disentangled Information Asymmetry in Spatial High-dimensional Data Interpretation", "url": "https://doi.org/10.1109/tpami.2026.3745900", "authors": "Xiao He ほか", "venue": "IEEE Transactions on Pattern Analysis and Machine Intelligence", "date": "2026-10-21", "sjr": 4.829, "citescore": 41.1, "citescore_year": "2025", "why": "空間的な高次元データの解釈における情報の非対称性を分離して扱う。"}, {"id": "jn41", "rank": 41, "field": "機械学習", "headline": "多エージェント系の構造と役割をテンソル空間で最適化", "title": "Tensor-space joint optimisation of topology-role configuration in multi-agent systems", "url": "https://doi.org/10.1038/s41467-026-78717-0", "authors": "Changping Yu ほか", "venue": "Nature Communications", "date": "2026-10-21", "sjr": 4.904, "citescore": 24.3, "citescore_year": "2025", "why": "多エージェント系のトポロジーと役割の構成を同時に最適化する方法を扱う。"}, {"id": "jn42", "rank": 42, "field": "オペレーションズ・リサーチ", "headline": "予測してから最適化する枠組みでのネット小売価格", "title": "Online Retail Pricing under a Smart Predict-then-Optimize Framework with Substitute-Aware Competitive Cluster Mining", "url": "https://doi.org/10.1016/j.eswa.2026.134832", "authors": "Qifeng Bao ほか", "venue": "Expert Systems with Applications", "date": "2026-10-22", "sjr": 1.939, "citescore": 17.0, "citescore_year": "2025", "why": "代替品を考慮した競合クラスタを使うネット小売の価格決定を扱う。"}, {"id": "jn43", "rank": 43, "field": "オペレーションズ・リサーチ", "headline": "機械摩耗を考えた省エネのジョブショップ計画", "title": "Two-stage Q-learning assisted MOEA/D for energy-efficient flexible job shop scheduling considering machine wear", "url": "https://doi.org/10.1016/j.eswa.2026.134752", "authors": "Da Wang ほか", "venue": "Expert Systems with Applications", "date": "2026-10-21", "sjr": 1.939, "citescore": 17.0, "citescore_year": "2025", "why": "Q学習を組み込んだ多目的進化計算による柔軟なジョブショップ計画を扱う。"}, {"id": "jn44", "rank": 44, "field": "人口学", "headline": "子と配偶者による放置が高齢者のスマホ依存に与える影響", "title": "Not All Family Neglect Is Equal: How Neglect by Adult Children Versus Spouses Relates to Compulsive Smartphone Use Among Older Adults in China", "url": "https://doi.org/10.1016/j.chb.2026.109228", "authors": "Yu Jia ほか", "venue": "Computers in Human Behavior", "date": "2026-10-22", "sjr": 3.072, "citescore": 22.6, "citescore_year": "2025", "why": "中国の高齢者で、成人した子と配偶者による放置の違いがスマートフォンの強迫的使用とどう関わるかを扱う。"}, {"id": "jn45", "rank": 45, "field": "因果推論", "headline": "スマートシティ建設は中高年の生活満足を上げたか", "title": "Welfare or divide? The impact of smart city construction on life satisfaction among middle-aged and older adults: A quasi-natural experiment from China", "url": "https://doi.org/10.1016/j.cities.2026.107698", "authors": "Yuanzhuo Liu ほか", "venue": "Cities", "date": "2026-10-22", "sjr": 1.772, "citescore": 11.5, "citescore_year": "2025", "why": "中国のスマートシティ政策を準自然実験として、中高年の生活満足への効果を推定する。"}, {"id": "jn46", "rank": 46, "field": "物理学", "headline": "超伝導量子プロセッサ上の表面符号のテレポーテーション転移", "title": "Teleportation transition of surface codes on a superconducting quantum processor", "url": "https://doi.org/10.1038/s41567-026-03484-0", "authors": "Yiren Zou ほか", "venue": "Nature Physics", "date": "2026-10-22", "sjr": 6.581, "citescore": 29.4, "citescore_year": "2025", "why": "量子誤り訂正の表面符号におけるテレポーテーション転移を実機で扱う。"}], "data_related": [{"rank": 1, "headline": "多エージェントLLMによる憲法起草の全記録", "title": "Multi-agent LLM constitutional assemblies: dataset for \"Can AI agents make law?\"", "url": "https://doi.org/10.5281/zenodo.23435854", "authors": "Ricaud ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "複数のペルソナ（理想主義者、実用主義者、自由至上主義者、共同体主義者など）を1つのLLMが演じ、5段階の手順でAIエージェント共同体の権利章典を起草した40回分の実験記録。討論の記録、起草された憲法、抽出された条項、投票、全プロンプトとペルソナ定義、モデル一覧を含む。6つのLLMで2×2の設計。ライセンスはCC BY 4.0。関連するプレプリント（arXiv）あり。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 2, "headline": "LLM代理交渉の報告の忠実さを測るコーパス", "title": "Reporting Fidelity in Delegated LLM Negotiation", "url": "https://doi.org/10.17605/osf.io/naf6t", "authors": "Parth Dama", "venue": "OSF", "date": "2026-10-22", "summary": "LLMエージェントが依頼者の代わりに交渉し、その結果を正しく報告するかを測るプロジェクト。4論点の調達交渉で、到達可能な結果を制御し、報告を正解と照合して採点する。事前登録した設計で15モデル・2,880交渉、全実行で9,104エピソードの記録を公開。ライセンスは「Other」。関連論文の記載なし。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 3, "headline": "LLMの政治的偏りを認識の一貫性で測る実験出力", "title": "Dataset for \"Beyond Viewpoint Affinity: Measuring Political Bias in LLMs as a Failure of Epistemic Consistency\"", "url": "https://doi.org/10.5281/zenodo.23552888", "authors": "Rozado, David", "venue": "Zenodo", "date": "2026-10-22", "summary": "政治的な手がかりだけを変えた同等の項目に対して、LLMが異なる評価基準を適用するかを測る実験の出力。人物の政治的立場だけを変えて数学の証明や作品を評価させる課題と、政治的に枠付けた研究デザインや記事を評価させる課題の2種類。ライセンスはCC BY 4.0。関連論文は記載なし（原稿の付属データ）。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 4, "headline": "チャットボットの政治的迎合を測るコードとデータ", "title": "Bowling alone in the AI era. Chatbot sycophancy, hyper-personalised filter bubbles, and the breakdown of deliberation", "url": "https://doi.org/10.5281/zenodo.23549701", "authors": "Malik ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "GPT-3.5とGPT-4の政治的迎合（sycophancy）を、政治的立場を示す経歴情報の有無で同意率を比べて測った研究のコードとデータ。熟議の崩壊と個人化されたフィルターバブルを論じる論文に対応。GitHubの版（v1.1.0）に紐づく。ライセンスはother-closed。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 5, "headline": "論争のある歴史を語り直す多エージェントLLMシミュレーション", "title": "Code and Supplementary Materials for: How Do Large Language Models (Re)Tell the Past? Constructing and Evaluating Multi-Agent Simulations of Contested Histories", "url": "https://doi.org/10.7910/dvn/fkzyap", "authors": "Ma ほか", "venue": "Harvard Dataverse", "date": "2026-10-22", "summary": "論争のある歴史をLLMの多エージェントシミュレーションで再構成・評価した論文の補足資料と分析コード（Harvard Dataverse）。zipとMarkdownの計5ファイル。ライセンスはCC0。内容の詳細はREADMEを参照とされ、記載からは変数などは分からない。関連論文は記載なし。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 6, "headline": "文学テキストの語りの声の変化を多エージェントで分析", "title": "narrative-voice-sim: code and data for \"A large language model-driven multi-agent simulation framework for quantitative analysis of narrative voice shifts in literary texts\"", "url": "https://doi.org/10.5281/zenodo.23539592", "authors": "Zhao ほか", "venue": "Zenodo", "date": "2026-10-21", "summary": "LLM駆動の多エージェントシミュレーションで文学作品の語りの声の変化を定量化した論文（PeerJ Computer Science投稿）のコード、プロンプト、生成対話、LLM出力のキャッシュ、指標、統計、専門家評価の手順。著作権のある原文は含まず復元スクリプトを付属。ライセンスはMIT。関連のGitHub版あり。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 7, "headline": "生成AIアプリの21万件のレビューのトピック割当", "title": "LLM App Reviews on Google Play: LDA Topic Assignments (k = 9)", "url": "https://doi.org/10.5281/zenodo.23551660", "authors": "Syaravina, Santika", "venue": "Zenodo", "date": "2026-10-22", "summary": "ChatGPT、Gemini、Claude、Perplexity、DeepSeekの5アプリについて、2025年6月1日〜2026年8月3日に投稿された英語のGoogle Playレビュー212,740件のLDA（k=9）のトピック割当。各行に仮名ID、日付、アプリ、地域、星評価、語数、9トピックの比率。本文は含まない。ライセンスはCC BY 4.0。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 8, "headline": "洪水対応でLLMの判断は誰を先に助けるかの監査設計", "title": "Who Gets Help First? A counterfactual audit of large language model decisions in flood response", "url": "https://doi.org/10.5281/zenodo.23565421", "authors": "Sargiotis ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "洪水・自然災害対応でLLMの判断が、被災者の属性、居住地、質問言語によって変わるかを調べる反実仮想監査の事前登録版（結果は含まない）。3地域・5種類の判断の75事例、ギリシャ語・フランス語・英語のプロンプト、名前リスト、分析コード、自動テスト。ライセンスはMIT。GitHub版あり。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 9, "headline": "LLMエージェント順位表の上位2者は区別できるか", "title": "Code and data for: LLM Agent Leaderboards Often Cannot Separate Their Top Two Entries", "url": "https://doi.org/10.5281/zenodo.23551411", "authors": "Bellibatlu ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "22の公開エージェント順位表の調査（項目サンプリングと再実行の誤差の範囲）、Terminal-Bench 2.0の複数回実行の分析、頑健性分析、首位の事後確率などを計算するPythonパッケージSepBoundのコードと派生データ。ライセンスはMIT。関連論文あり（論文の引用を求めている）。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 10, "headline": "LLMで生成した実験刺激の監査と分析のRコード", "title": "The Stimulus Is a Sample: R code and data for the Behavior Research Methods tutorial", "url": "https://doi.org/10.5281/zenodo.23541672", "authors": "Mohiyeddini, Changiz", "venue": "Zenodo", "date": "2026-10-21", "summary": "LLMで実験刺激を生成するときの7段階の手順（母集団の定義、複数の生成元、網羅性の監査、生成元を変量効果とする分析など）を実装したRコード、合成データ、表と図。生成元の分散による第1種過誤のシミュレーションを含む。データはすべて合成。ライセンスはCC BY 4.0。関連論文は記載なし（Behavior Research Methodsのチュートリアル付属）。", "kind": "data", "theme": "LLM熟議・ペルソナ", "theme_no": 5}, {"rank": 11, "headline": "中国上場企業のAI安全ガバナンスと金融化", "title": "AI Safety Governance and Corporate Financialization", "url": "https://doi.org/10.17632/378czwrg8r.1", "authors": "Chen, Wanyi", "venue": "Mendeley Data", "date": "2026-10-22", "summary": "中国A株の上場企業（2019〜2024年）について、年次報告書とCSR・ESG報告書から抽出したAI安全ガバナンスの実践と企業の金融化を分析するデータ。財務データはCSMAR、報告書はCNINFOからクローラで取得、特許テキストや求人データも利用。ライセンスはCC BY 4.0。関連論文の記載なし。", "kind": "data", "theme": "会計情報科学", "theme_no": 2}, {"rank": 12, "headline": "中小企業の破綻を再現するエージェントシミュレーション", "title": "BankruptSim: an agent-based simulation of SME failure and bankruptcy", "url": "https://doi.org/10.5281/zenodo.23551741", "authors": "Chaves-Maza ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "中小企業の破綻を模擬するエージェントベースのシミュレーション。各企業は3つの経営特性と完全な財務諸表、健全から法的破産までの7段階を持ち、取引信用網で困窮が伝播する。強化学習の環境、要因実験、SHAPによる説明可能性の検証（原因が既知の企業履歴を生成）を含む。ライセンスはCC BY 4.0。関連論文は記載なし。", "kind": "data", "theme": "会計情報科学", "theme_no": 2}, {"rank": 13, "headline": "インドネシア9社の報告書と株価：RAG用データ", "title": "Management Document and Stock Data of Nine Indonesian Companies for AI Research", "url": "https://doi.org/10.5281/zenodo.23569559", "authors": "Sanjaya ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "インドネシア証券取引所の9社の2024年度の年次報告書・サステナビリティ報告書・財務報告書（計27件のPDF）と日次株価。報告書をテキストと検索索引に加工し、RAGで企業についての質問に答える用途。ライセンスはCC BY 4.0。関連論文の記載なし。", "kind": "data", "theme": "会計情報科学", "theme_no": 2}, {"rank": 14, "headline": "社会関係資本とSDGs成績：155か国のパネル", "title": "Does Social Capital Deserve Its Own Sustainable Development Goal? Evidence for a Trust Indicator under SDG 16", "url": "https://doi.org/10.5281/zenodo.23560041", "authors": "Bayraktar, Murat", "venue": "Zenodo", "date": "2026-10-22", "summary": "155か国・2007〜2023年の均衡パネルで、Legatumと世界価値観調査の社会関係資本の指標、SDG指数、世界ガバナンス指標を組み合わせ、社会関係資本がSDGs成績とどう結びつくかを分析したデータ。ライセンスはCC BY 4.0。関連論文の記載なし。", "kind": "data", "theme": "包摂的コミュニティ・社会", "theme_no": 4}, {"rank": 15, "headline": "都市交通の契約再交渉の費用：AER論文の再現データ", "title": "Replication data for: The Cost of Contract Renegotiation: Evidence from the Local Public Sector", "url": "https://doi.org/10.3886/e112676v1-218960", "authors": "Gagnepain ほか", "venue": "ICPSR", "date": "2026-10-22", "summary": "都市交通サービスの契約（固定価格型とコスト加算型）に、再交渉を含む構造的なプリンシパル・エージェントモデルを当てはめたAmerican Economic Review論文の再現用データ（ICPSR）。ライセンスの記載なし。関連論文あり。", "kind": "data", "theme": "都市・インフラ政策", "theme_no": 6}, {"rank": 16, "headline": "米国の農村道路の死亡事故の郡別パネル", "title": "U.S. Rural Road Fatality County Panel, 2015-2024", "url": "https://doi.org/10.5281/zenodo.23547649", "authors": "Nani, Emmanuel Oti", "venue": "Zenodo", "date": "2026-10-21", "summary": "米国FARSから作った2015〜2024年の郡×年の死亡事故パネル。農村・都市、道路種別、道路管理者、被害者の種類別の死者数、人口、2024年の道路延長、事故と地点の対応表、コードブック、品質報告を含む。ライセンスはCC BY 4.0。関連のGitHubあり。", "kind": "data", "theme": "都市・インフラ政策", "theme_no": 6}, {"rank": 17, "headline": "任意地域の多手段アクセシビリティ計算エンジン", "title": "MAPPER: Multimodal Accessibility and Place Profiling Engine for Arbitrary Regions", "url": "https://doi.org/10.5281/zenodo.23557361", "authors": "Zacher ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "OpenStreetMapとGTFSから徒歩・自転車・自動車・公共交通のネットワークを作り、施設や職場への到達性をH3の六角格子で計算するC++のソフトウェア（v2.0.0）。ライセンスはApache-2.0。関連のGitHub版あり。", "kind": "data", "theme": "都市・インフラ政策", "theme_no": 6}, {"rank": 18, "headline": "低データ都市の熱・洪水複合リスクの重要アクセス選別", "title": "October 22, 2026 (v1)SoftwareOpen Reproducibility Package (R2): Open-Data Critical-Access Screening for Compound Heat–Flood Infrastructure Risk in Low-Data Cities", "url": "https://doi.org/10.5281/zenodo.23567320", "authors": "Al-Azazi ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "イエメンの4都市で道路42,274本と人口格子10,013個を対象に、公開データから道路の到達性、重要施設への近さ、地形・排水、人口曝露などを統合し、インフラの現地確認の優先度を決める枠組みの再現パッケージ。ライセンスはCC BY 4.0。関連論文は記載なし（Scientific Reports投稿中）。", "kind": "data", "theme": "都市・インフラ政策", "theme_no": 6}, {"rank": 19, "headline": "欧州スマート観光プロジェクトのウェブ存続と地域文脈", "title": "European Smart Tourism Projects: Web Presence, and Territorial Context", "url": "https://doi.org/10.5281/zenodo.23373560", "authors": "Brito e Abreu ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "2019〜2026年の欧州スマート観光首都コンテストに応募した105都市・29か国の780件の取り組みについて、説明、応募・受賞状況、URLとその存続の自動確認結果、都市の文脈変数をまとめたデータ。ライセンスはCC BY 4.0とApache-2.0。関連論文の記載なし。", "kind": "data", "theme": "サービス・マーケティング", "theme_no": 3}, {"rank": 20, "headline": "カンタベリー地震の液状化の残差の再現パッケージ", "title": "Canterbury liquefaction stationarity: repeatable manifestation residuals across three earthquakes", "url": "https://doi.org/10.5281/zenodo.23555065", "authors": "Ren, Lijian", "venue": "Zenodo", "date": "2026-10-22", "summary": "3つの地震にわたる液状化の発現の残差が繰り返し現れるかを検証した論文の解析スクリプト、集計出力、図。2事象・3事象の変量効果モデルや、事象の記憶の検査を含む。第三者の生データや地点別の表は含まない。ライセンスはMIT。関連論文の記載なし。", "kind": "data", "theme": "確率動力学・計算力学", "theme_no": 8}, {"rank": 21, "headline": "緩慢な地すべり変位を説明可能な生成モデルで予測", "title": "Code for \"Hydrologically driven slow-moving landslide displacement prediction using explainable generative model\"", "url": "https://doi.org/10.5281/zenodo.23554365", "authors": "Hu ほか", "venue": "Zenodo", "date": "2026-10-22", "summary": "水文条件に駆動される緩慢な地すべりの変位を、加速確率の推定と拡散確率モデルで予測する論文のコード。設定ファイルとJupyterノートブック。変位と地下水圧のデータはUSGSのデータ公開を参照。ライセンスはCC BY 4.0。関連論文の記載あり（引用情報）。", "kind": "data", "theme": "確率動力学・計算力学", "theme_no": 8}, {"rank": 22, "headline": "プエルトリコの豪雨による地すべり危険度ラスタ", "title": "Landslide susceptibility and shaded-relief data for the Naranjito Municipio, Puerto Rico", "url": "https://doi.org/10.5066/p1ee2m9l", "authors": "William Schulz ほか", "venue": "USGS DOI Tool Production Environment", "date": "2026-10-21", "summary": "プエルトリコのナランヒト地区について、長時間の強い降雨で起こる地すべりの危険度地図のラスタ、陰影起伏の標高ラスタ、分類表、英語・スペイン語の説明文。形式はtif・xml・jpg。ライセンスはCC0。USGSの地図（SIM 3557）に引用されている。", "kind": "data", "theme": "確率動力学・計算力学", "theme_no": 8}]}</script>
+<script id="archive-data" type="application/json">["2026-10-23", "2026-10-22", "2026-10-21", "2026-10-20", "2026-10-19", "2026-10-18", "2026-10-17", "2026-10-16", "2026-10-15", "2026-10-14", "2026-10-13", "2026-10-12", "2026-10-11", "2026-10-10", "2026-10-09", "2026-10-08", "2026-10-07", "2026-10-06", "2026-10-05", "2026-10-04", "2026-10-03", "2026-10-02", "2026-10-01", "2026-09-30", "2026-09-29", "2026-09-28", "2026-09-27", "2026-09-26"]</script>
+<script id="page-meta" type="application/json">{"kind": "archive"}</script>
+<script>
+(function () {
+  "use strict";
+  var REPORT = JSON.parse(document.getElementById("report-data").textContent);
+  var ARCHIVE = JSON.parse(document.getElementById("archive-data").textContent);
+  var META = JSON.parse(document.getElementById("page-meta").textContent);
+  if (REPORT.part1 && !REPORT.related) REPORT.related = REPORT.part1;  // reports made before the merge
+  if (REPORT.part2 && !REPORT.notable) REPORT.notable = REPORT.part2;
+  // two sources (preprints, journals), each with papers related to the owner's research and important papers;
+  // the last two groups are the layout of the reports of 2026-09-26
+  var GROUPS = [
+    { key: "pre", label: "プレプリント", parts: [["pre_related", "関連", "プレプリント：研究に関連する論文"], ["pre_notable", "注目", "プレプリント：注目分野の最先端"]] },
+    { key: "jnl", label: "論文誌", parts: [["jnl_related", "関連", "論文誌：研究に関連する論文"], ["jnl_notable", "注目", "論文誌：注目分野の最先端"]] },
+    { key: "data", label: "データ", parts: [["data_related", "関連", "オープンデータ：研究に関連する新着データセット"]] },
+    { key: "latest", label: "最新", parts: [["related", "関連", "最新：研究に関連する論文"], ["notable", "重要", "最新：分野を問わない重要論文"]] },
+    { key: "topj", label: "Top誌", parts: [["top", "関連", "Top誌（SJR上位10%）：研究に関連する論文"], ["top_notable", "重要", "Top誌（SJR上位10%）：分野を問わない重要論文"]] }
+  ];
+  var LABELS = [["p1", "(1) 一言で"], ["p2", "(2) 問い"], ["p3", "(3) 手法"], ["p4", "(4) 検証"], ["p5", "(5) 結果"], ["p6", "(6) 限界"]];
+  var BASIS_PILL = { "本文": "本文を読んだ解説", "抄録": "抄録の範囲の解説", "題名": "題名だけの情報" };
+  // a theme comes with its colour number (theme_no 1-8 -> --t1 ... --t8); the page holds no theme names of its own
+  function themeColor(it) { return it.theme_no ? "--t" + it.theme_no : "--accent-soft"; }
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+  var groups = GROUPS.map(function (g) {
+    return { key: g.key, label: g.label, parts: g.parts.filter(function (p) { return (REPORT[p[0]] || []).length > 0; }) };
+  }).filter(function (g) { return g.parts.length > 0; });
+  var parts = [].concat.apply([], groups.map(function (g) { return g.parts; }));
+  var views = parts.map(function (p) { return p[0]; }).concat(["marks", "list"]);
+  function groupOf(view) {
+    for (var i = 0; i < groups.length; i++) {
+      for (var j = 0; j < groups[i].parts.length; j++) { if (groups[i].parts[j][0] === view) return groups[i]; }
+    }
+    return null;
+  }
+  var lastInGroup = store.get("pd-sub-v1", {});
+  var marks = store.get("pd-marks-v1", {});
+  var saved = store.get("pd-pos-" + REPORT.date, { view: views[0], index: 0 });
+  var start = { part1: "related", part2: "notable" }[saved.view] || saved.view;
+  var state = { view: views.indexOf(start) >= 0 ? start : views[0], index: saved.index || 0 };
+  var stage = document.getElementById("stage");
+  var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+  // date selector
+  document.getElementById("daylabel").textContent = " " + REPORT.date;
+  var sel = document.getElementById("datesel");
+  function fillDates(list) {
+    ARCHIVE = list;
+    while (sel.firstChild) sel.removeChild(sel.firstChild);
+    list.forEach(function (d, i) {
+      var o = el("option", null, d + (i === 0 ? "（最新）" : ""));
+      o.value = d; if (d === REPORT.date) o.selected = true; sel.appendChild(o);
+    });
+  }
+  fillDates(ARCHIVE);
+  // the current date list (older pages are not rebuilt every day); the list embedded in the page is the fallback
+  try {
+    fetch((META.kind === "archive" ? "../" : "") + "dates.json", { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (list) { if (Array.isArray(list) && list.length) fillDates(list); })
+      .catch(function () {});
+  } catch (e) {}
+  sel.addEventListener("change", function () {
+    var d = sel.value, latest = ARCHIVE[0];
+    var href = META.kind === "archive" ? (d === latest ? "../index.html" : d + ".html") : (d === latest ? "index.html" : "archive/" + d + ".html");
+    location.href = href;
+  });
+
+  // tabs: 最新 / Top誌 / ★ / 一覧, and under a source the 関連 / 注目 sub-tabs
+  var tabs = document.getElementById("tabs"), subtabs = document.getElementById("subtabs");
+  function select(view) {
+    stopSpeech(false);
+    state.view = view; if (view !== "list") { state.index = 0; }
+    var g = groupOf(view);
+    if (g) { lastInGroup[g.key] = view; store.set("pd-sub-v1", lastInGroup); }
+    render(); window.scrollTo(0, 0);
+  }
+  function addTab(key, text, label, onClick) {
+    var b = el("button", "tab", text); b.type = "button"; b.dataset.view = key;
+    if (label) { b.setAttribute("aria-label", label); b.title = label; }
+    b.addEventListener("click", onClick);
+    tabs.appendChild(b);
+  }
+  groups.forEach(function (g) {
+    var n = g.parts.reduce(function (s, p) { return s + REPORT[p[0]].length; }, 0);
+    addTab("group:" + g.key, g.label + " " + n, null, function () {
+      var v = lastInGroup[g.key];
+      if (!g.parts.some(function (p) { return p[0] === v; })) v = g.parts[0][0];
+      select(v);
+    });
+  });
+  addTab("marks", "★", "あとで読む（★を付けた論文）", function () { select("marks"); });
+  addTab("list", "一覧", null, function () { select("list"); });
+
+  function items(view) {
+    if (view === "marks") return Object.keys(marks).map(function (k) { return marks[k]; }).sort(function (a, b) { return (b.markedAt || "").localeCompare(a.markedAt || ""); });
+    return REPORT[view] || [];
+  }
+  function current() { var list = items(state.view); return list[Math.max(0, Math.min(state.index, list.length - 1))]; }
+  function save() { store.set("pd-pos-" + REPORT.date, { view: state.view, index: state.index }); }
+
+  function renderTabs() {
+    var g = groupOf(state.view);
+    Array.prototype.forEach.call(tabs.children, function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.view === state.view || (!!g && b.dataset.view === "group:" + g.key)));
+    });
+    subtabs.innerHTML = "";
+    subtabs.hidden = !g || g.parts.length < 2;
+    if (g) g.parts.forEach(function (p) {
+      var b = el("button", "tab subtab", p[1] + " " + REPORT[p[0]].length); b.type = "button";
+      b.setAttribute("aria-pressed", String(p[0] === state.view));
+      b.addEventListener("click", function () { select(p[0]); });
+      subtabs.appendChild(b);
+    });
+  }
+
+  function labelled(cls, label, text) {
+    var p = el("p", cls); p.appendChild(el("span", "label", label)); p.appendChild(document.createTextNode(text)); return p;
+  }
+
+  function renderCard() {
+    var list = items(state.view);
+    stage.innerHTML = "";
+    var card = el("article", "card");
+    if (!list.length) {
+      card.appendChild(el("p", "empty", state.view === "marks"
+        ? "まだ★がありません。気になった論文で ☆ を押すと、ここにまとまります（この端末に保存）。"
+        : state.view === "data_related" ? "この日の新着データセットはありません。" : "この日の論文はありません。"));
+      stage.appendChild(card); updateControls(); return;
+    }
+    state.index = Math.max(0, Math.min(state.index, list.length - 1));
+    var it = list[state.index];
+    var head = el("div", "cardhead");
+    head.appendChild(el("span", "pos", (state.index + 1) + " / " + list.length + (it.rank ? "　" + it.rank + "位" : "")));
+    var chipText = it.theme || it.field || "";
+    if (chipText) {
+      var chip = el("span", "chip", chipText);
+      chip.style.background = "var(" + themeColor(it) + ")";
+      head.appendChild(chip);
+    }
+    card.appendChild(head);
+    card.appendChild(el("h1", "headline", it.headline || it.title));
+    var ex = it.explain;
+    if (ex) {
+      var basis = el("p", "basis");
+      basis.appendChild(el("span", "pill", (ex.short ? "短い解説・" : "") + (BASIS_PILL[ex.basis] || ex.basis || "")));
+      if (ex.preprint) basis.appendChild(el("span", "badge", "未査読プレプリント"));
+      if (ex.basis_note) basis.appendChild(el("span", null, ex.basis_note));
+      card.appendChild(basis);
+      LABELS.forEach(function (l, i) {
+        if (!ex[l[0]]) return;
+        var sec = el("section", "ex" + (i === 0 ? " first" : ""));
+        sec.appendChild(el("h2", null, l[1]));
+        sec.appendChild(el("p", null, ex[l[0]]));
+        card.appendChild(sec);
+      });
+      if (ex.fun) {
+        var fun = el("section", "ex fun");
+        fun.appendChild(el("h2", null, "面白いポイント"));
+        fun.appendChild(el("p", null, ex.fun));
+        card.appendChild(fun);
+      }
+      if (ex.unverified) card.appendChild(labelled("unverified", "確認できなかった点", ex.unverified));
+    } else if (it.summary) {
+      if (it.kind === "data") {
+        var dbasis = el("p", "basis");
+        dbasis.appendChild(el("span", "pill", "オープンデータ"));
+        dbasis.appendChild(el("span", null, "リポジトリに登録された説明をもとに要約"));
+        card.appendChild(dbasis);
+      }
+      card.appendChild(el("p", "summary", it.summary));
+      if (it.venue === "e-Stat") card.appendChild(el("p", "meta", "このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。"));
+    } else {
+      card.appendChild(el("p", "empty", "この論文の解説はまだありません。"));
+    }
+    if (it.why) card.appendChild(labelled("reason", "重要な理由", it.why));
+    var orig = el("p", "orig");
+    var a = el("a", null, it.title); a.href = it.url; a.target = "_blank"; a.rel = "noopener";
+    orig.appendChild(a); card.appendChild(orig);
+    // three texts to hand on: a question for an AI, a note for another person, a reproduction request for an AI
+    var askrow = el("div", "askrow"), askStatus = el("p", "askstatus");
+    askStatus.setAttribute("aria-live", "polite");
+    HANDOFFS.forEach(function (h) {
+      var b = el("button", "ask"); b.type = "button";
+      h.label.forEach(function (part, i) {
+        if (i) b.appendChild(document.createElement("wbr"));
+        b.appendChild(document.createTextNode(part));
+      });
+      b.addEventListener("click", function () { copyText(h.make(it), askStatus, h.done); });
+      askrow.appendChild(b);
+    });
+    card.appendChild(askrow); card.appendChild(askStatus);
+    var metrics = [it.sjr ? "SJR " + it.sjr : "", it.citescore ? "CiteScore " + it.citescore + (it.citescore_year ? "（" + it.citescore_year + "）" : "") : ""].filter(Boolean).join("・");
+    var venue = (it.venue || "") + (metrics ? "（" + metrics + "）" : "");
+    card.appendChild(el("p", "meta", [it.authors, venue, it.date].filter(Boolean).join("｜") + (it.fromDate ? "｜" + it.fromDate + " のレポート" : "")));
+    if (state.view === views[0] && state.index === 0 && REPORT.intro) card.appendChild(el("p", "intro", REPORT.intro));
+    stage.appendChild(card);
+    updateControls();
+  }
+
+  function renderList() {
+    stage.innerHTML = "";
+    var wrap = el("div", "list");
+    parts.forEach(function (p) {
+      var list = items(p[0]);
+      wrap.appendChild(el("div", "label", p[2] + "（" + list.length + "）"));
+      list.forEach(function (it, i) {
+        var row = el("button", "row"); row.type = "button";
+        row.appendChild(el("span", "n", String(i + 1)));
+        var box = el("span");
+        box.appendChild(el("div", "h", (marks[it.url] ? "★ " : "") + (it.headline || it.title)));
+        var basis = it.explain ? ((it.explain.short ? "短い・" : "") + (it.explain.basis === "本文" ? "本文" : it.explain.basis === "抄録" ? "抄録" : "題名のみ")) : (it.kind === "data" ? "データ" : "");
+        box.appendChild(el("div", "s", [it.theme || it.field, it.venue, basis, it.explain && it.explain.preprint ? "未査読" : ""].filter(Boolean).join("｜")));
+        row.appendChild(box);
+        row.addEventListener("click", function () { select(p[0]); state.index = i; render(); window.scrollTo(0, 0); });
+        wrap.appendChild(row);
+      });
+    });
+    stage.appendChild(wrap);
+    updateControls();
+  }
+
+  function updateControls() {
+    var list = items(state.view), card = state.view !== "list" && list.length > 0;
+    document.getElementById("prev").disabled = !card || state.index <= 0;
+    document.getElementById("next").disabled = !card || state.index >= list.length - 1;
+    document.getElementById("speak").disabled = !card || !("speechSynthesis" in window);
+    document.getElementById("auto").disabled = !card || !("speechSynthesis" in window);
+    var m = document.getElementById("mark"), it = card ? current() : null;
+    m.disabled = !card;
+    var on = !!(it && marks[it.url]);
+    m.setAttribute("aria-pressed", String(on)); m.textContent = on ? "★" : "☆";
+  }
+
+  function render() { renderTabs(); if (state.view === "list") renderList(); else renderCard(); save(); }
+
+  function go(delta) {
+    var list = items(state.view);
+    var n = Math.max(0, Math.min(state.index + delta, list.length - 1));
+    if (n !== state.index) { state.index = n; stopSpeech(false); render(); window.scrollTo(0, 0); }
+  }
+
+  // speech
+  var auto = false, wakeLock = null, rate = store.get("pd-rate", 1.1);
+  function jaVoice() {
+    var vs = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+    return vs.filter(function (v) { return /^ja/i.test(v.lang); })[0] || null;
+  }
+  function textOf(it) {
+    var out = [it.headline || it.title], ex = it.explain;
+    if (ex) {
+      LABELS.forEach(function (l) { if (ex[l[0]]) out.push(l[1].replace(/^\(\d\)\s*/, "") + "。" + ex[l[0]]); });
+    } else if (it.summary && it.summary.indexOf("概要なし") !== 0) {
+      out.push(it.summary);
+    }
+    if (it.why) out.push("重要な理由。" + it.why);
+    return out.join(" ");
+  }
+  function speak() {
+    if (!("speechSynthesis" in window)) return;
+    var it = current(); if (!it) return;
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(textOf(it));
+    u.lang = "ja-JP"; u.rate = rate; var v = jaVoice(); if (v) u.voice = v;
+    u.onend = function () {
+      if (!auto) return;
+      var list = items(state.view);
+      if (state.index < list.length - 1) { state.index++; render(); window.scrollTo(0, 0); setTimeout(speak, 600); }
+      else { setAuto(false); }
+    };
+    speechSynthesis.speak(u);
+  }
+  function stopSpeech(keepAuto) { if (window.speechSynthesis) speechSynthesis.cancel(); if (!keepAuto && auto) setAuto(false); }
+  function setAuto(on) {
+    auto = on;
+    document.getElementById("auto").setAttribute("aria-pressed", String(on));
+    if (on && navigator.wakeLock) { navigator.wakeLock.request("screen").then(function (l) { wakeLock = l; }).catch(function () {}); }
+    if (!on && wakeLock) { try { wakeLock.release(); } catch (e) {} wakeLock = null; }
+  }
+  document.getElementById("speak").addEventListener("click", function () {
+    if (window.speechSynthesis && speechSynthesis.speaking) { stopSpeech(false); } else { speak(); }
+  });
+  document.getElementById("auto").addEventListener("click", function () {
+    if (auto) { setAuto(false); stopSpeech(true); } else { setAuto(true); speak(); }
+  });
+
+  // marks
+  document.getElementById("mark").addEventListener("click", function () {
+    var it = current(); if (!it) return;
+    if (marks[it.url]) { delete marks[it.url]; }
+    else {
+      marks[it.url] = { headline: it.headline, title: it.title, url: it.url, summary: it.summary, why: it.why, explain: it.explain,
+        theme: it.theme, theme_no: it.theme_no, field: it.field, kind: it.kind, venue: it.venue, sjr: it.sjr, citescore: it.citescore, citescore_year: it.citescore_year, apa: it.apa, authors: it.authors, date: it.date,
+        fromDate: it.fromDate || REPORT.date, markedAt: new Date().toISOString() };
+    }
+    store.set("pd-marks-v1", marks);
+    if (state.view === "marks") render(); else updateControls();
+  });
+
+  // text to send to another person: the interesting point in Japanese, the link, the citation and the CiteScore
+  function shareText(it) {
+    var ex = it.explain || {}, lines = [];
+    if (ex.fun) lines.push("面白いポイント", ex.fun, "");
+    else if (it.summary) lines.push(it.kind === "data" ? "データの説明" : "要約", it.summary, "");
+    lines.push(it.url);
+    lines.push("APA: " + (it.apa || "（取得できていません。上のリンクのDOIから引用情報を取り寄せてください）"));
+    if (it.kind !== "data") {
+      lines.push("Journal CiteScore: " + (it.citescore
+        ? it.citescore + (it.citescore_year ? "（" + it.citescore_year + "）" : "")
+        : (ex.preprint ? "（未査読プレプリント。掲載誌なし）" : "（Scopus収録なし、または未取得）")));
+    }
+    return lines.join("\n");
+  }
+  // phones and tablets have a share menu (AI apps, messengers, mail): there it is offered after the copy
+  var CAN_SHARE = typeof navigator.share === "function" && !!window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  // copies text and says so under the card; when the clipboard is blocked, shows the text to copy by hand
+  function copyText(text, status, ok) {
+    var card = status.parentNode;
+    [].forEach.call(card.querySelectorAll(".copybox, .sharemenu"), function (n) { n.remove(); });
+    var offerShare = function () {
+      if (!CAN_SHARE) return;
+      var b = el("button", "ask sharemenu", "共有メニューで送る"); b.type = "button";
+      b.addEventListener("click", function () { navigator.share({ text: text }).catch(function () {}); });
+      card.insertBefore(b, status.nextSibling);
+    };
+    var byHand = function () {
+      var ta = document.createElement("textarea");
+      ta.className = "copybox"; ta.rows = 8; ta.value = text; ta.readOnly = false;
+      status.textContent = "自動でコピーできませんでした。下の文を選んでコピーしてください。";
+      card.insertBefore(ta, status.nextSibling);
+      offerShare();
+      ta.focus(); ta.select();
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { status.textContent = ok; offerShare(); }, byHand);
+    } else { byHand(); }
+  }
+
+  // the requests are pasted into an AI chat (Claude, ChatGPT, Gemini, or a coding agent), on a phone too:
+  // self-contained, with no skills, local files or PC tools; the question follows the owner's paper-review rules
+  var QUESTION = [
+    "次の論文を、私向けにわかりやすく解説してください。",
+    "",
+    "- 論文：{paper}",
+    "- 読者：私（研究者。この論文の分野の専門家とは限らない）",
+    "",
+    "進め方",
+    "- 上のリンクを開いて原文を読む。無料で読めるPDFや別の版（arXiv・著者版など）があれば、それも使う。",
+    "- 本文が読めず、抄録や紹介文しか読めないときは、そのことを最初に書き、読めた範囲だけで解説する。読めていない部分を推測で埋めない。",
+    "",
+    "説明の順序",
+    "(1) 一言で：この論文で何ができるようになったか（題名の言い換えにしない）",
+    "(2) 問い：何が課題で、従来の方法のどこが足りないか",
+    "(3) 手法：入力・出力と、なぜそれで解けるかの直観。核の式は意味を言葉で添え、具体例を一つ通す",
+    "(4) 検証：データ・比較対象・評価指標。何をもって良いとするかを結果より先に示す",
+    "(5) 結果：主要な図表の読み方（軸、どこを見るか、何が言えるか）と数値",
+    "(6) 限界：著者が認める限界と、残る疑問（私の研究への示唆は、聞いたときだけ書く）",
+    "",
+    "書き方",
+    "- 数値・主張には節・図・表・ページを添える（例：「（§4.2、図5）」）。論文の主張、補った背景、あなたの解釈を区別する。",
+    "- 数値を孫引きしない。未査読のプレプリントならその旨を書く。専門用語は初出で短く定義し、英語の原語を添える。比喩で正確さを落とさない。",
+    "- 答える前に、書いた数値・図表番号・主張を原文と照らし合わせる。確かめられなかった箇所は「未確認」と書く。",
+    "- スマホで読むので、表や長い数式は使わず、(1)〜(6)の見出しと短い段落で、日本語のチャットの文章として書く（ファイルは作らない）。",
+    "- 最後に「確認できなかった点」を1〜3行で書く（なければ「なし」）。"
+  ].join("\n");
+  var QUESTION_DATA = [
+    "次のデータセットについて、私向けにわかりやすく解説してください。",
+    "",
+    "- データ：{paper}",
+    "- 読者：私（研究者。このデータの分野の専門家とは限らない）",
+    "",
+    "進め方",
+    "- 上のリンクを開いて説明ページを読む。関連する論文やコードが示されていれば、それも確かめる。",
+    "- 説明ページに書かれていないことは推測で埋めず、「記載なし」と書く。",
+    "",
+    "説明の順序",
+    "(1) 一言で：何のデータで、何に使えるか",
+    "(2) 作り方：誰が、いつ、どうやって集めたか（出典・期間・対象）",
+    "(3) 中身：ファイル、変数、単位、件数、欠損",
+    "(4) 使い方：どんな分析や研究に使えるか。具体例を一つ",
+    "(5) 注意：偏り、利用条件（ライセンス）、関連する論文との関係",
+    "(6) 確認できなかった点：1〜3行（なければ「なし」）",
+    "",
+    "書き方",
+    "- スマホで読むので、表は使わず、(1)〜(6)の見出しと短い段落で、日本語のチャットの文章として書く（ファイルは作らない）。"
+  ].join("\n");
+  var REPRO = [
+    "次の論文の主要な結果を、自分で書いたコードで再現してください。",
+    "",
+    "- 論文：{paper}",
+    "- 目的：中心となる主張を1つ選び、それを示す表か図の数値を再現できるかを確かめる",
+    "- 環境：コードを実行できるなら実行する。実行できないときは、コードと実行手順を示し、結果は「未実行」と書く",
+    "",
+    "進め方",
+    "1. 原文を読む。無料で読めるPDFや別の版（arXiv・著者版など）、公式のコードとデータ（GitHub、補足資料、データのリポジトリ）があるかを最初に確かめ、あれば場所とライセンスを書く。",
+    "2. 再現する対象を決める。中心となる主張と、それを示す表か図を1つ選び、節・表・図の番号と選んだ理由を書く。合成や測定など実験室での作業が中心の論文では、実験の手順は対象にせず、公開データの再解析や論文中の計算・シミュレーションに絞る。計算で再現できるものがなければ、そう書いて終える。",
+    "3. 実装の仕様を一覧にする。入力と出力、データ（入手先・期間・前処理・除外条件）、手法（核の式とアルゴリズム）、設定値（ハイパーパラメータ・乱数の種・反復回数）、評価指標。論文に書かれていない値は「仮定」と明記し、その値にした理由を書く。",
+    "4. 小さく作って確かめる。核の式は、手で計算できる小さな例でテストする。少ないデータと短い計算で最後まで動かしてから、本来の規模に広げる。計算が重すぎるときは縮小版にし、縮小で何が変わりうるかを書く。",
+    "5. 結果を論文と並べる。論文の値、再現した値、差、差の理由の候補を表にする。再現できなかった点も、そのまま書く。",
+    "6. まとめる。再現できた点、できなかった点、論文の記述があいまいで判断した点、使った計算資源と時間、次に確かめることを書く。",
+    "",
+    "守ること",
+    "- 実行していない結果や、論文にない数値を作らない。数値には出典（論文の節・表・図、または実行ログ）を添える。",
+    "- データの利用条件を確かめる。入手できないデータや、条件で使えないデータは、同じ形の合成データで動作だけを確かめ、その旨を書く。",
+    "- 公式のコードを使ったり参考にしたりしたときは、どこをどう使ったかとライセンスを書く。",
+    "- 設定を1か所にまとめ、乱数の種を固定し、必要なライブラリと版を書いて、別の人が同じ手順で動かせるようにする。",
+    "- 報告は日本語で書く。"
+  ].join("\n");
+  var REPRO_DATA = [
+    "次のデータセットを取得して中身を確かめ、記載どおりかを検証するコードを書いてください。",
+    "",
+    "- データ：{paper}",
+    "- 環境：コードを実行できるなら実行する。実行できないときは、コードと実行手順を示し、結果は「未実行」と書く",
+    "",
+    "進め方",
+    "1. 説明ページを読み、ファイルの一覧、形式、サイズ、ライセンス、関連する論文やコードを確かめる。",
+    "2. データを取得して読み込み、記載どおりか（件数・変数・期間・単位）を確かめる。食い違いは表にする。",
+    "3. 変数ごとの基本統計と欠損を集計し、主要な変数の分布を図にする。",
+    "4. 関連する論文や再現用のコードがあれば、主要な表か図を1つ選んで再現し、元の値と並べる。",
+    "5. まとめる。確かめられた点、食い違い、使うときの注意（利用条件・偏り・欠損）を書く。",
+    "",
+    "守ること",
+    "- 実行していない結果や、データにない数値を作らない。",
+    "- ライセンスと利用条件に従う。個人を特定できる情報が含まれていたら、それ以上扱わずに報告する。",
+    "- 設定を1か所にまとめ、必要なライブラリと版を書いて、別の人が同じ手順で動かせるようにする。",
+    "- 報告は日本語で書く。"
+  ].join("\n");
+  function fill(template, it) { return template.replace("{paper}", it.title + "（" + it.url + "）"); }
+  function questionText(it) { return fill(it.kind === "data" ? QUESTION_DATA : QUESTION, it); }
+  function reproText(it) { return fill(it.kind === "data" ? REPRO_DATA : REPRO, it); }
+  var HANDOFFS = [
+    { label: ["AIへの", "質問文"], make: questionText, done: "AIへの質問文をコピーしました。AIのチャットに貼り付けてください。" },
+    { label: ["他人への", "共有文"], make: shareText, done: "他人への共有文をコピーしました。メッセージに貼り付けてください。" },
+    { label: ["AIへの", "再現実装", "依頼文"], make: reproText, done: "再現実装の依頼文をコピーしました。コードを実行できるAI（Claude Code など）に貼り付けてください。" }
+  ];
+
+  document.getElementById("prev").addEventListener("click", function () { go(-1); });
+  document.getElementById("next").addEventListener("click", function () { go(1); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") go(1); else if (e.key === "ArrowLeft") go(-1);
+  });
+  var sx = null, sy = null;
+  stage.addEventListener("touchstart", function (e) { var t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY; }, { passive: true });
+  stage.addEventListener("touchend", function (e) {
+    if (sx === null || state.view === "list") return;
+    var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    sx = sy = null;
+  }, { passive: true });
+  if (window.speechSynthesis && speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = function () {};
+
+  render();
+})();
+</script>
+</body>
+</html>
